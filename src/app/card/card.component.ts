@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { AnimationEvent } from "@angular/animations";
 import { fromEvent, map, zip } from 'rxjs';
 import { flip, swipeRight, swipeLeft } from './animations';
-import { CommonModule } from '@angular/common';
 
 interface Swipe {
   start: TouchEvent;
@@ -19,15 +20,18 @@ type AnimState = 'inactive' | 'active';
   animations: [flip, swipeRight, swipeLeft]
 })
 export class CardComponent {
+  @Input() front = 'Front';
+  @Input() back = 'Back';
+  @Input() color = 'pink'
+
+  @Output() swiped = new EventEmitter<boolean>();
+
   flipState: AnimState = 'inactive';
   swipeRightState: AnimState = 'inactive';
   swipeLeftState: AnimState = 'inactive';
 
   flipped = false;
   showInfo = true;
-
-  frontText = 'Front';
-  backText = 'Back';
 
   ngOnInit() {
     // https://github.com/angular/components/issues/24936
@@ -63,5 +67,11 @@ export class CardComponent {
 
   swipeLeft() {
     this.swipeLeftState = (this.swipeLeftState === 'inactive') ? 'active' : 'inactive';
+  }
+
+  emitSwiped(event: AnimationEvent) {
+    if (event.fromState === 'inactive' && event.toState === 'active') {
+      event.triggerName === 'swipeRight' ? this.swiped.emit(true) : this.swiped.emit(false);
+    }
   }
 }

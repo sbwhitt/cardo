@@ -2,13 +2,16 @@
   (click)="handleTouch()"
   id="container"
   [class]="flipped ? 'card-container' : 'card-container back'"
+  [style]="{ background: color }"
   [@flip]="flipState"
   (@flip.start)="showInfo = false;"
   (@flip.done)="flipped = !flipped; showInfo = true;"
   [@swipeRight]="swipeRightState"
+  (@swipeRight.done)="emitSwiped($event)"
   [@swipeLeft]="swipeLeftState"
+  (@swipeLeft.done)="emitSwiped($event)"
 >
   <div *ngIf="showInfo" [class]="flipped ? 'card-content' : 'card-content back'">
-    {{flipped ? frontText : backText}}
+    {{flipped ? front : back}}
   </div>
 </div>

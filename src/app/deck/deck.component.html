@@ -1,0 +1,11 @@
+<div class="deck">
+  <ng-container *ngFor="let card of cards; index as i">
+    <app-card
+      *ngIf="i === cards.length-1"
+      [front]="card.front"
+      [back]="card.back"
+      [color]="card.color"
+      (swiped)="handleSwiped($event)"
+    ></app-card>
+  </ng-container>
+</div>
