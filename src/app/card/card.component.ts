@@ -1,23 +1,31 @@
 import { Component } from '@angular/core';
 import { fromEvent, map, zip } from 'rxjs';
-import { flip } from './flip.animation';
+import { flip, swipeRight, swipeLeft } from './animations';
+import { CommonModule } from '@angular/common';
 
 interface Swipe {
   start: TouchEvent;
   end: TouchEvent;
 }
 
+type AnimState = 'inactive' | 'active';
+
 @Component({
   selector: 'app-card',
   standalone: true,
-  imports: [],
+  imports: [CommonModule],
   templateUrl: './card.component.html',
   styleUrl: './card.component.scss',
-  animations: [flip]
+  animations: [flip, swipeRight, swipeLeft]
 })
 export class CardComponent {
-  flipState = 'inactive';
+  flipState: AnimState = 'inactive';
+  swipeRightState: AnimState = 'inactive';
+  swipeLeftState: AnimState = 'inactive';
+
   flipped = false;
+  showInfo = true;
+
   frontText = 'Front';
   backText = 'Back';
 
@@ -38,7 +46,7 @@ export class CardComponent {
   }
 
   handleTouch() {
-    this.flipState = (this.flipState == 'inactive') ? 'active' : 'inactive';
+    this.flipState = (this.flipState === 'inactive') ? 'active' : 'inactive';
   }
 
   handleSwipe(touch: Swipe) {
@@ -50,10 +58,10 @@ export class CardComponent {
   }
 
   swipeRight() {
-    console.log("right");
+    this.swipeRightState = (this.swipeRightState === 'inactive') ? 'active' : 'inactive';
   }
 
   swipeLeft() {
-    console.log("left");
+    this.swipeLeftState = (this.swipeLeftState === 'inactive') ? 'active' : 'inactive';
   }
 }
