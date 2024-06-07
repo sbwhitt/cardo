@@ -51,6 +51,7 @@ export class CardComponent {
   }
 
   handleSwipe(touch: Swipe) {
+    // https://developer.mozilla.org/en-US/docs/Web/API/Touch_events#example
     const diff = touch.end.changedTouches[0].pageX - touch.start.changedTouches[0].pageX;
     if (Math.abs(diff) > 100) {
       diff > 0  ? this.swipeRight() : this.swipeLeft();
