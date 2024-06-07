@@ -1,3 +1,11 @@
-<div (click)="handleTouch()" id="container" class="card-container" [@flipState]="flipState">
-    <div class="card-content">Flash card</div>
+<div
+  (click)="handleTouch()"
+  id="container"
+  class="card-container"
+  [@flip]="flipState"
+  (@flip.done)="flipped = !flipped"
+>
+  <div class="card-content">
+    {{flipped ? frontText : backText}}
+  </div>
 </div>

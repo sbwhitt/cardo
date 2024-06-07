@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { fromEvent, map, zip } from 'rxjs';
-import { animate, state, style, transition, trigger } from '@angular/animations';
+import { flip } from './flip.animation';
 
 interface Swipe {
   start: TouchEvent;
@@ -13,21 +13,13 @@ interface Swipe {
   imports: [],
   templateUrl: './card.component.html',
   styleUrl: './card.component.scss',
-  animations: [
-    trigger('flipState', [
-      state('active', style({
-        transform: 'rotateY(179deg)'
-      })),
-      state('inactive', style({
-        transform: 'rotateY(0)'
-      })),
-      transition('active => inactive', animate('500ms ease-out')),
-      transition('inactive => active', animate('500ms ease-in'))
-    ])
-  ]
+  animations: [flip]
 })
 export class CardComponent {
   flipState = 'inactive';
+  flipped = false;
+  frontText = 'Front';
+  backText = 'Back';
 
   ngOnInit() {
     // https://github.com/angular/components/issues/24936
@@ -46,7 +38,6 @@ export class CardComponent {
   }
 
   handleTouch() {
-    console.log("tap");
     this.flipState = (this.flipState == 'inactive') ? 'active' : 'inactive';
   }
 
