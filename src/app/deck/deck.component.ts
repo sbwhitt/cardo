@@ -20,7 +20,8 @@ export class DeckComponent {
   ) {}
 
   ngOnInit() {
-    this.dbService.getCards().then((res: any) => this.cards = Object.values(res));
+    this.dbService.getCards()
+      .then((res: any) => this.cards = Object.values(res));
   }
 
   handleSwiped(direction: boolean) {
