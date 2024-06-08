@@ -1,11 +1,15 @@
-<div class="deck">
-  <ng-container *ngFor="let card of cards; index as i">
-    <app-card
-      *ngIf="i === cards.length-1"
-      [front]="card.front"
-      [back]="card.back"
-      [color]="card.color"
-      (swiped)="handleSwiped($event)"
-    ></app-card>
-  </ng-container>
-</div>
+@if (loading) {
+  <p>loading...</p>
+} @else {
+  <div class="deck">
+    <ng-container *ngFor="let card of cards; index as i">
+      <app-card
+        *ngIf="i === cards.length-1"
+        [front]="card.german"
+        [back]="card.english"
+        [color]="getColor(card.type)"
+        (swiped)="handleSwiped($event)"
+      ></app-card>
+    </ng-container>
+  </div>
+}
