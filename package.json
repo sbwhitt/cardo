@@ -19,7 +19,9 @@
     "@angular/platform-browser": "^18.0.2",
     "@angular/platform-browser-dynamic": "^18.0.2",
     "@angular/router": "^18.0.2",
+    "@auth0/angular-jwt": "^5.2.0",
     "firebase": "^10.12.2",
+    "firebaseui": "^6.1.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.14.2"

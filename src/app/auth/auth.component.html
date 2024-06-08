@@ -1,0 +1,12 @@
+<h1>{{loading ? 'Loading...' : 'Sign In'}}</h1>
+
+<form class="signin" [formGroup]="signInForm" (submit)="onSubmit()">
+  <input class="inp" type="text" placeholder="email" formControlName="email" />
+  <input class="inp" type="password" placeholder="password" formControlName="password" />
+  <button
+    *ngIf="!loading"
+    [disabled]="signInForm.invalid"
+    class="submit"
+    type="submit"
+  >Sign In</button>
+</form>
