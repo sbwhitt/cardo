@@ -22,7 +22,7 @@ type AnimState = 'inactive' | 'active';
 export class CardComponent {
   @Input() front = 'Front';
   @Input() back = 'Back';
-  @Input() color = 'pink'
+  @Input() color = 'lightpink'
 
   @Output() swiped = new EventEmitter<boolean>();
 
