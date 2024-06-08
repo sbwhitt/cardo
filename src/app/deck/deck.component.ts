@@ -1,12 +1,8 @@
 import { Component } from '@angular/core';
 import { CardComponent } from '../card/card.component';
 import { CommonModule } from '@angular/common';
-
-interface Card {
-  front: string;
-  back: string;
-  color: string;
-}
+import { DbService } from '../services/db.service';
+import { Card } from '../models/cards';
 
 @Component({
   selector: 'app-deck',
@@ -16,19 +12,15 @@ interface Card {
   styleUrl: './deck.component.scss'
 })
 export class DeckComponent {
-  colors = ['lightpink', 'lightgreen', 'lightblue', 'plum', 'lightyellow'];
-
   cards: Card[] = [];
   ready = false;
 
+  constructor(
+    private dbService: DbService
+  ) {}
+
   ngOnInit() {
-    for (let color of this.colors) {
-      this.cards.push({
-        front: 'Front',
-        back: 'Back',
-        color: color
-      });
-    }
+    this.dbService.getCards().then((res: any) => this.cards = Object.values(res));
   }
 
   handleSwiped(direction: boolean) {
