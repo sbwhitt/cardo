@@ -16,6 +16,20 @@
     </div>
   }
   @else {
-    <button style="margin: auto;" (click)="deck = deal(pile)">Deal another {{this.getDeckSize()}}?</button>
+    <div class="options">
+      <button
+        class="btn"
+        *ngIf="missed.length > 0"
+        (click)="dealMissed()"
+      >Deal {{missed.length}} missed cards?</button>
+      <button
+        class="btn"
+        (click)="dealSameDeck()"
+      >Deal same deck?</button>
+      <button
+        class="btn"
+        (click)="dealNewDeck()"
+      >Deal another {{this.getDeckSize()}}?</button>
+    </div>
   }
 }

@@ -14,9 +14,13 @@ import { SettingsService } from '../services/settings.service';
 })
 export class DeckComponent {
   loading = false;
-  cards: Card[] = [];
-  pile: Card[] = [];
-  deck: Card[] = [];
+
+  cards: Card[] = [];       // all cards form db, source of truth, immutable
+  pile: Card[] = [];        // working pile of all cards, mutable
+
+  deck: Card[] = [];        // working deck, mutable
+  currentDeck: Card[] = []; // current deck stored, immutable
+  missed: Card[] = [];      // missed cards within active deck
 
   constructor(
     private cardService: CardsService,
@@ -25,10 +29,10 @@ export class DeckComponent {
 
   ngOnInit() {
     this.loading = true;
-    this.cardService.getCards().then((res: Card[]) => {
+    this.cardService.get().then((res: Card[]) => {
       this.cards = res;
       this.pile = structuredClone(this.cards);
-      this.deck = this.deal(this.pile);
+      this.dealNewDeck();
       this.loading = false;
     });
   }
@@ -38,6 +42,7 @@ export class DeckComponent {
   }
 
   // https://stackoverflow.com/a/12646864
+  // in place shuffle
   shuffle(cards: Card[]) {
     for (let i = cards.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -45,7 +50,9 @@ export class DeckComponent {
     }
   }
 
+  // deals from inputted array, removes dealt items from source
   deal(cards: Card[]): Card[] {
+    this.missed = [];
     const ret: Card[] = [];
     for (let i = 0; i < this.getDeckSize(); i++) {
       if (cards.length === 0) { return ret; }
@@ -56,8 +63,30 @@ export class DeckComponent {
     return ret;
   }
 
+  dealMissed(): void {
+    this.deck = this.missed;
+    this.shuffle(this.deck);
+    this.missed = [];
+  }
+
+  dealSameDeck(): void {
+    this.deck = structuredClone(this.currentDeck);
+    this.shuffle(this.deck);
+    this.missed = [];
+  }
+
+  dealNewDeck(): void {
+    this.deck = this.deal(this.pile);
+    this.currentDeck = structuredClone(this.deck);
+    this.missed = [];
+  }
+
   handleSwiped(direction: boolean) {
-    this.deck.pop();
+    const card = this.deck.pop();
+    if (!card) { return; }
+    // right, true
+    // left, false
+    if (!direction) { this.missed.push(card); }
   }
 
   getColor(type: string): string {

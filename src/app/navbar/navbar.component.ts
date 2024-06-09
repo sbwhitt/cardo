@@ -9,8 +9,6 @@ import { Component, EventEmitter, Output } from '@angular/core';
 })
 export class NavbarComponent {
   @Output() menuPressed = new EventEmitter<void>();
-
-  emitMenuPressed() {
-    this.menuPressed.emit();
-  }
+  @Output() undoPressed = new EventEmitter<void>();
+  @Output() redoPressed = new EventEmitter<void>();
 }

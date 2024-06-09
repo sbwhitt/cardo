@@ -20,14 +20,16 @@ for row in rows:
 cur.close()
 conn.close()
 
-def to_card(fields):
+def to_card(fields, i):
     return {
+        "id": i,
         "german": fields[0],
         "english": fields[1],
         "ger_sent_1": fields[2],
         "eng_sent_1": fields[3],
         "ger_sent_2": fields[4],
         "eng_sent_2": fields[5],
+        "starred": False
     }
 
 def add_types(card):
@@ -44,7 +46,9 @@ def add_types(card):
     return card
 
 with open("output.json", "w", encoding="utf-8") as fout:
-    json_out = { "cards": [
-        add_types(to_card(fields)) for fields in flds
-    ] }
+    json_out = {
+        "cards": [
+            add_types(to_card(fields, i)) for i, fields in enumerate(flds)
+        ]
+    }
     fout.write(json.dumps(json_out, indent=4))

@@ -8,22 +8,32 @@ import * as cardsLocal from '../../../parse/output.json';
   providedIn: 'root'
 })
 export class CardsService {
-  private cards: Card[] | null = null;
+  private locals: Card[] | null = null;
 
   constructor(
     private dbService: DbService,
     private envService: EnvironmentService
   ) {}
 
-  async getCards(): Promise<Card[]> {
-    if (this.cards && this.cards.length > 0) { return new Promise(() => this.cards); }
+  async get(): Promise<Card[]> {
+    if (this.locals && this.locals.length > 0) { return this.locals; }
     if (this.envService.isLocal()) {
       // @ts-ignore
-      return cardsLocal.cards
+      this.locals = cardsLocal.cards
         .map((card) => { return { ...card, viewed: false } });
+      return this.locals ? this.locals : [];
     }
     return this.dbService.getCards().then((res: any) => {
       return Object.values(res);
     });
+  }
+
+  async update(card: Card): Promise<void> {
+    if (this.envService.isLocal()) {
+      this.locals = await this.get();
+      this.locals[card.id] = card;
+      return;
+    }
+    return this.dbService.updateCard(card);
   }
 }

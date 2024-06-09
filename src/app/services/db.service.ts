@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { get, getDatabase, ref, set } from 'firebase/database';
+import { DataSnapshot, get, getDatabase, ref, set } from 'firebase/database';
 import { Card } from '../models/cards';
 import { AuthService } from './auth.service';
 
@@ -12,18 +12,17 @@ export class DbService {
     private authService: AuthService
   ) {}
 
-  getCards() {
+  async getCards(): Promise<object | null> {
     const db = getDatabase(this.authService.firebaseApp);
     const dbRef = ref(db, 'cards');
-    return get(dbRef).then((snap) => {
+    return await get(dbRef).then((snap) => {
       if (snap.exists()) { return snap.toJSON(); }
       return null;
     });
   }
 
-  writeCards(cards: Card[]) {
+  async updateCard(card: Card): Promise<void> {
     const db = getDatabase(this.authService.firebaseApp);
-    const dbRef = ref(db, 'cards');
-    set(dbRef, cards);
+    return set(ref(db, 'cards/' + card.id), card);
   }
 }
