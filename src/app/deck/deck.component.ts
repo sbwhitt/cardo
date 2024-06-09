@@ -93,8 +93,8 @@ export class DeckComponent {
     if (!direction) { this.missed.push(card); }
   }
 
-  handleStarred(card: Card) {
-    card.starred = true;
+  handleStarred(val: boolean, card: Card) {
+    card.starred = val;
     this.cardService.update(card);
   }
 

@@ -26,7 +26,7 @@ export class CardComponent {
   @Input() starred = false;
 
   @Output() onSwiped = new EventEmitter<boolean>();
-  @Output() onStarred = new EventEmitter<void>();
+  @Output() onStarred = new EventEmitter<boolean>();
 
   flipState: AnimState = 'inactive';
   swipeRightState: AnimState = 'inactive';
@@ -82,7 +82,7 @@ export class CardComponent {
 
   starTapped(event: Event) {
     event.stopPropagation();
-    this.onStarred.emit();
+    this.onStarred.emit(!this.starred);
   }
 
   swipeRight() {
