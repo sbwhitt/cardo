@@ -1,0 +1,37 @@
+@import '../../../styles.scss';
+
+:host {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 4px;
+  margin-right: 4px;
+}
+
+.track {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border-radius: 2rem;
+  width: 42px;
+  height: 24px;
+  box-shadow: 0px 1px 1px gray;
+}
+
+.slider {
+  border-radius: 2rem;
+  width: 18px;
+  height: 18px;
+  background: $primary;
+  box-shadow: 1px 1px 2px #00000070;
+}
+
+.left {
+  transition: all 0.3s ease;
+  margin-left: 4px;
+}
+
+.right {
+  transition: all 0.3s ease;
+  margin-left: 20px;
+}

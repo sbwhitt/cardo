@@ -1,7 +1,11 @@
-<form class="menu-container" [formGroup]="menuForm" [@drop]="getDropState()" (submit)="setData()">
+<form class="menu-container" [formGroup]="menuForm" [@drop]="getDropState()">
+  <div class="row">
+    <p class="label" style="margin-right: 1rem;">English on front?</p>
+    <app-action-slider [active]="getEnglishFront()" (click)="toggleEnglishFront()"></app-action-slider>
+  </div>
   <div class="row">
     <input type="number" placeholder="deck size" formControlName="deckSize" />
-    <button (click)="setData()">Set</button>
+    <button class="btn" style="margin: 0;" (click)="setDeckSize()">Set deck size</button>
   </div>
   <div class="navbar">
     <button class="icon-btn" (click)="closePressed.emit()">

@@ -7,8 +7,8 @@
       <ng-container *ngFor="let card of deck; index as i">
         <app-card
           *ngIf="i === deck.length-1"
-          [front]="card.german"
-          [back]="card.english"
+          [front]="getEnglishFirst() ? card.english : card.german"
+          [back]="!getEnglishFirst() ? card.english : card.german"
           [color]="getColor(card.type)"
           (swiped)="handleSwiped($event)"
         ></app-card>

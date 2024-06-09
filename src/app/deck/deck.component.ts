@@ -41,6 +41,10 @@ export class DeckComponent {
     return this.settingsService.getDeckSize();
   }
 
+  getEnglishFirst(): boolean {
+    return this.settingsService.getEnglishFront();
+  }
+
   // https://stackoverflow.com/a/12646864
   // in place shuffle
   shuffle(cards: Card[]) {
