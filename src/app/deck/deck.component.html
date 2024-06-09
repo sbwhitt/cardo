@@ -10,7 +10,9 @@
           [front]="getEnglishFirst() ? card.english : card.german"
           [back]="!getEnglishFirst() ? card.english : card.german"
           [color]="getColor(card.type)"
-          (swiped)="handleSwiped($event)"
+          [starred]="card.starred"
+          (onSwiped)="handleSwiped($event)"
+          (onStarred)="handleStarred(card)"
         ></app-card>
       </ng-container>
     </div>
