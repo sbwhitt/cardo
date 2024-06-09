@@ -4,7 +4,7 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class SettingsService {
-  deckSize = 1;
+  deckSize = 10;
 
   constructor() { }
 
