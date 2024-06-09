@@ -2,7 +2,7 @@ import { Component, EventEmitter, HostListener, Input, Output } from '@angular/c
 import { CommonModule } from '@angular/common';
 import { AnimationEvent } from "@angular/animations";
 import { fromEvent, map, zip } from 'rxjs';
-import { flip, swipeRight, swipeLeft } from './animations';
+import { flip, swipeRight, swipeLeft } from './card.animations';
 
 interface Swipe {
   start: TouchEvent;

@@ -3,6 +3,7 @@ import { CardComponent } from '../card/card.component';
 import { CommonModule } from '@angular/common';
 import { Card } from '../models/cards';
 import { CardsService } from '../services/cards.service';
+import { SettingsService } from '../services/settings.service';
 
 @Component({
   selector: 'app-deck',
@@ -17,10 +18,9 @@ export class DeckComponent {
   pile: Card[] = [];
   deck: Card[] = [];
 
-  deckSize = 10;
-
   constructor(
-    private cardService: CardsService
+    private cardService: CardsService,
+    private settingsService: SettingsService
   ) {}
 
   ngOnInit() {
@@ -33,6 +33,10 @@ export class DeckComponent {
     });
   }
 
+  getDeckSize(): number {
+    return this.settingsService.getDeckSize();
+  }
+
   // https://stackoverflow.com/a/12646864
   shuffle(cards: Card[]) {
     for (let i = cards.length - 1; i > 0; i--) {
@@ -43,7 +47,7 @@ export class DeckComponent {
 
   deal(cards: Card[]): Card[] {
     const ret: Card[] = [];
-    for (let i = 0; i < this.deckSize; i++) {
+    for (let i = 0; i < this.getDeckSize(); i++) {
       if (cards.length === 0) { return ret; }
       const choice = Math.floor(Math.random()*cards.length);
       cards.splice(choice, 1);

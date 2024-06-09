@@ -16,6 +16,6 @@
     </div>
   }
   @else {
-    <button (click)="deck = deal(pile)">Deal another {{deckSize}}?</button>
+    <button style="margin: auto;" (click)="deck = deal(pile)">Deal another {{this.getDeckSize()}}?</button>
   }
 }

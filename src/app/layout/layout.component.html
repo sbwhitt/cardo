@@ -1,4 +1,5 @@
 <div class="content">
+  <app-menu [open]="menuOpen" (closePressed)="menuOpen = false"></app-menu>
   <app-deck></app-deck>
-  <app-navbar></app-navbar>
+  <app-navbar (menuPressed)="menuOpen = true"></app-navbar>
 </div>

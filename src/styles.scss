@@ -21,11 +21,35 @@ input {
 
 button {
     width: fit-content;
-    padding: 0 2rem;
+    padding: 0.25rem 2rem;
     border: none;
     outline: none;
     height: 2rem;
-    margin: auto;
     border-radius: 5px;
     font-size: large;
+}
+
+.icon-btn {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    outline: none;
+    border: none;
+    background: none;
+    width: 4rem;
+    height: 4rem;
+    padding: 0 0.5rem;
+    &:hover {
+        cursor: pointer;
+        outline: solid 1px black;
+    }
+}
+
+.navbar {
+    height: 4rem;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    // border-top: solid 1px black;
 }
