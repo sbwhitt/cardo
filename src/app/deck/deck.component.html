@@ -1,15 +1,21 @@
 @if (loading) {
   <p>loading...</p>
-} @else {
-  <div class="deck">
-    <ng-container *ngFor="let card of cards; index as i">
-      <app-card
-        *ngIf="i === cards.length-1"
-        [front]="card.german"
-        [back]="card.english"
-        [color]="getColor(card.type)"
-        (swiped)="handleSwiped($event)"
-      ></app-card>
-    </ng-container>
-  </div>
+}
+@else {
+  @if (deck.length > 0) {
+    <div class="deck">
+      <ng-container *ngFor="let card of deck; index as i">
+        <app-card
+          *ngIf="i === deck.length-1"
+          [front]="card.german"
+          [back]="card.english"
+          [color]="getColor(card.type)"
+          (swiped)="handleSwiped($event)"
+        ></app-card>
+      </ng-container>
+    </div>
+  }
+  @else {
+    <button (click)="deck = deal(pile)">Deal another {{deckSize}}?</button>
+  }
 }

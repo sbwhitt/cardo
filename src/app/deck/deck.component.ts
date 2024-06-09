@@ -14,6 +14,10 @@ import { CardsService } from '../services/cards.service';
 export class DeckComponent {
   loading = false;
   cards: Card[] = [];
+  pile: Card[] = [];
+  deck: Card[] = [];
+
+  deckSize = 10;
 
   constructor(
     private cardService: CardsService
@@ -22,15 +26,34 @@ export class DeckComponent {
   ngOnInit() {
     this.loading = true;
     this.cardService.getCards().then((res: Card[]) => {
-      this.cards = structuredClone(res);
-      this.shuffle(this.cards);
+      this.cards = res;
+      this.pile = structuredClone(this.cards);
+      this.deck = this.deal(this.pile);
       this.loading = false;
     });
   }
 
+  // https://stackoverflow.com/a/12646864
+  shuffle(cards: Card[]) {
+    for (let i = cards.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [cards[i], cards[j]] = [cards[j], cards[i]];
+    }
+  }
+
+  deal(cards: Card[]): Card[] {
+    const ret: Card[] = [];
+    for (let i = 0; i < this.deckSize; i++) {
+      if (cards.length === 0) { return ret; }
+      const choice = Math.floor(Math.random()*cards.length);
+      cards.splice(choice, 1);
+      ret.push(cards[choice]);
+    }
+    return ret;
+  }
+
   handleSwiped(direction: boolean) {
-    direction ? console.log("right") : console.log("left");
-    this.cards.pop();
+    this.deck.pop();
   }
 
   getColor(type: string): string {
@@ -41,14 +64,6 @@ export class DeckComponent {
       case 'verb': { return 'plum'; }
       case 'other': { return 'lightgreen'; }
       default: { return 'gray'; }
-    }
-  }
-
-  // https://stackoverflow.com/a/12646864
-  shuffle(cards: Card[]) {
-    for (let i = cards.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [cards[i], cards[j]] = [cards[j], cards[i]];
     }
   }
 }

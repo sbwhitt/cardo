@@ -19,7 +19,8 @@ export class CardsService {
     if (this.cards && this.cards.length > 0) { return new Promise(() => this.cards); }
     if (this.envService.isLocal()) {
       // @ts-ignore
-      return cardsLocal.cards;
+      return cardsLocal.cards
+        .map((card) => { return { ...card, viewed: false } });
     }
     return this.dbService.getCards().then((res: any) => {
       return Object.values(res);
