@@ -33,6 +33,6 @@ export const swipeLeft = trigger('swipeLeft', [
     transform: 'rotateZ(0deg)',
     translate: '0% 0%'
   })),
-  transition('active => inactive', animate('300ms ease-out')),
-  transition('inactive => active', animate('300ms ease-in'))
+  transition('active => inactive', animate('400ms ease-out')),
+  transition('inactive => active', animate('400ms ease-in'))
 ]);

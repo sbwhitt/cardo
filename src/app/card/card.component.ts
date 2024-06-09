@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, HostListener, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AnimationEvent } from "@angular/animations";
 import { fromEvent, map, zip } from 'rxjs';
@@ -49,8 +49,21 @@ export class CardComponent {
         .subscribe((swipe) => { this.handleSwipe(swipe) });
   }
 
+  @HostListener('window:keydown', ['$event'])
+  handleKeyDown(event: KeyboardEvent) {
+    if (event.key === "ArrowUp" || event.key === "ArrowDown") {
+      this.tap();
+    }
+    else if (event.key === "ArrowRight") {
+      this.swipeRight();
+    }
+    else if (event.key === "ArrowLeft") {
+      this.swipeLeft();
+    }
+  }
+
   handleTouch() {
-    this.flipState = (this.flipState === 'inactive') ? 'active' : 'inactive';
+    this.tap();
   }
 
   handleSwipe(touch: Swipe) {
@@ -59,6 +72,10 @@ export class CardComponent {
     if (Math.abs(diff) > 100) {
       diff > 0  ? this.swipeRight() : this.swipeLeft();
     }
+  }
+
+  tap() {
+    this.flipState = (this.flipState === 'inactive') ? 'active' : 'inactive';
   }
 
   swipeRight() {
