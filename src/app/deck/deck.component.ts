@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { CardComponent } from '../card/card.component';
 import { CommonModule } from '@angular/common';
-import { DbService } from '../services/db.service';
 import { Card } from '../models/cards';
+import { CardsService } from '../services/cards.service';
 
 @Component({
   selector: 'app-deck',
@@ -16,18 +16,16 @@ export class DeckComponent {
   cards: Card[] = [];
 
   constructor(
-    private dbService: DbService
+    private cardService: CardsService
   ) {}
 
   ngOnInit() {
     this.loading = true;
-    this.dbService.getCards()
-      .then((res: any) => {
-        this.cards = Object.values(res);
-        this.shuffle(this.cards);
-        console.log(this.cards);
-        this.loading = false;
-      });
+    this.cardService.getCards().then((res: Card[]) => {
+      this.cards = structuredClone(res);
+      this.shuffle(this.cards);
+      this.loading = false;
+    });
   }
 
   handleSwiped(direction: boolean) {
@@ -39,7 +37,7 @@ export class DeckComponent {
     switch (type) {
       case 'masculine': { return 'lightblue'; }
       case 'feminine': { return 'lightpink'; }
-      case 'neuter': { return 'lightyellow'; }
+      case 'neuter': { return 'palegoldenrodyellow'; }
       case 'verb': { return 'plum'; }
       case 'other': { return 'lightgreen'; }
       default: { return 'gray'; }
