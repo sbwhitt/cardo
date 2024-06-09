@@ -37,7 +37,7 @@ export class DeckComponent {
     switch (type) {
       case 'masculine': { return 'lightblue'; }
       case 'feminine': { return 'lightpink'; }
-      case 'neuter': { return 'palegoldenrodyellow'; }
+      case 'neuter': { return 'palegoldenrod'; }
       case 'verb': { return 'plum'; }
       case 'other': { return 'lightgreen'; }
       default: { return 'gray'; }
