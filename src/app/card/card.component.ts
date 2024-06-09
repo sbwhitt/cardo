@@ -23,8 +23,10 @@ export class CardComponent {
   @Input() front = 'Front';
   @Input() back = 'Back';
   @Input() color = 'lightpink'
+  @Input() starred = false;
 
-  @Output() swiped = new EventEmitter<boolean>();
+  @Output() onSwiped = new EventEmitter<boolean>();
+  @Output() onStarred = new EventEmitter<void>();
 
   flipState: AnimState = 'inactive';
   swipeRightState: AnimState = 'inactive';
@@ -78,6 +80,11 @@ export class CardComponent {
     this.flipState = (this.flipState === 'inactive') ? 'active' : 'inactive';
   }
 
+  starTapped(event: Event) {
+    event.stopPropagation();
+    this.onStarred.emit();
+  }
+
   swipeRight() {
     this.swipeRightState = (this.swipeRightState === 'inactive') ? 'active' : 'inactive';
   }
@@ -88,7 +95,7 @@ export class CardComponent {
 
   emitSwiped(event: AnimationEvent) {
     if (event.fromState === 'inactive' && event.toState === 'active') {
-      event.triggerName === 'swipeRight' ? this.swiped.emit(true) : this.swiped.emit(false);
+      event.triggerName === 'swipeRight' ? this.onSwiped.emit(true) : this.onSwiped.emit(false);
     }
   }
 }

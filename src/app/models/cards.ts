@@ -7,5 +7,5 @@ export interface Card {
   eng_sent_1: string;
   ger_sent_2: string;
   eng_sent_2: string;
-  score: number;
+  starred: boolean;
 }

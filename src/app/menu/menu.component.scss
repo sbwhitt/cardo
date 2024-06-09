@@ -12,3 +12,10 @@
     z-index: 1;
     gap: 1rem;
 }
+
+.row {
+    margin: 0 0.5rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}

@@ -4,7 +4,8 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class SettingsService {
-  deckSize = 10;
+  private deckSize = 10;
+  private englishFront = true;
 
   constructor() { }
 
@@ -14,5 +15,13 @@ export class SettingsService {
 
   setDeckSize(size: number) {
     this.deckSize = size;
+  }
+
+  getEnglishFront(): boolean {
+    return this.englishFront;
+  }
+
+  setEnglishFront(val: boolean) {
+    this.englishFront = val;
   }
 }

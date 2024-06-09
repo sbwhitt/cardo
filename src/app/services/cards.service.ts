@@ -18,9 +18,8 @@ export class CardsService {
   async get(): Promise<Card[]> {
     if (this.locals && this.locals.length > 0) { return this.locals; }
     if (this.envService.isLocal()) {
-      // @ts-ignore
-      this.locals = cardsLocal.cards
-        .map((card) => { return { ...card, viewed: false } });
+      // @ts-ignored
+      this.locals = cardsLocal.cards;
       return this.locals ? this.locals : [];
     }
     return this.dbService.getCards().then((res: any) => {
