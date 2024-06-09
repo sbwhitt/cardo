@@ -12,7 +12,7 @@
           [color]="getColor(card.type)"
           [starred]="card.starred"
           (onSwiped)="handleSwiped($event)"
-          (onStarred)="handleStarred($event, card)"
+          (onStarred)="handleStarred($event, card, i)"
         ></app-card>
       </ng-container>
     </div>

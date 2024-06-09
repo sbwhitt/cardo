@@ -86,15 +86,16 @@ export class DeckComponent {
   }
 
   handleSwiped(direction: boolean) {
-    console.log("direction", direction);
     const card = this.deck.pop();
     if (!card) { return; }
     // right == true, left == false
     if (!direction) { this.missed.push(card); }
   }
 
-  handleStarred(val: boolean, card: Card) {
+  handleStarred(val: boolean, card: Card, index: number) {
     card.starred = val;
+    this.cards[card.id] = card;
+    this.currentDeck[index] = card;
     this.cardService.update(card);
   }
 
