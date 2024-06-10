@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
 import { CardComponent } from '../card/card.component';
 import { CommonModule } from '@angular/common';
-import { Card } from '../models/cards';
+import { Card } from '../models';
 import { CardsService } from '../services/cards.service';
 import { SettingsService } from '../services/settings.service';
+import { ActionsService } from '../services/actions.service';
 
 @Component({
   selector: 'app-deck',
@@ -23,6 +24,7 @@ export class DeckComponent {
   missed: Card[] = [];      // missed cards within active deck
 
   constructor(
+    private actionsService: ActionsService,
     private cardService: CardsService,
     private settingsService: SettingsService
   ) {}
@@ -89,6 +91,10 @@ export class DeckComponent {
     const card = this.deck.pop();
     if (!card) { return; }
     // right == true, left == false
+    this.actionsService.push({
+      direction: direction,
+      card: card
+    });
     if (!direction) { this.missed.push(card); }
   }
 

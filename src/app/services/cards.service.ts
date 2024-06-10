@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Card } from '../models/cards';
+import { Card } from '../models';
 import { DbService } from './db.service';
 import { EnvironmentService } from './environment.service';
 import * as cardsLocal from '../../../parse/output.json';
