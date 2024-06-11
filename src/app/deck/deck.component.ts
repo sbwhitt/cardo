@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
 import { CardComponent } from '../card/card.component';
 import { CommonModule } from '@angular/common';
-import { Card } from '../models/cards';
+import { Action, Card } from '../models';
 import { CardsService } from '../services/cards.service';
 import { SettingsService } from '../services/settings.service';
+import { ActionsService } from '../services/actions.service';
 
 @Component({
   selector: 'app-deck',
@@ -23,18 +24,34 @@ export class DeckComponent {
   missed: Card[] = [];      // missed cards within active deck
 
   constructor(
+    private actionsService: ActionsService,
     private cardService: CardsService,
     private settingsService: SettingsService
   ) {}
 
   ngOnInit() {
     this.loading = true;
+    this.actionsService.activeUndo.subscribe((res) => this.applyUndo(res));
+    this.actionsService.activeRedo.subscribe((res) => this.applyRedo(res));
     this.cardService.get().then((res: Card[]) => {
       this.cards = res;
       this.pile = structuredClone(this.cards);
       this.dealNewDeck();
       this.loading = false;
     });
+  }
+
+  applyUndo(action: Action) {
+    if (!action.direction) {
+      this.missed.splice(
+        this.missed.findIndex((m) => m.id === action.card.id), 1
+      );
+    }
+    this.deck.push(action.card);
+  }
+
+  applyRedo(action: Action) {
+    this.handleSwiped(action.direction);
   }
 
   getDeckSize(): number {
@@ -89,6 +106,11 @@ export class DeckComponent {
     const card = this.deck.pop();
     if (!card) { return; }
     // right == true, left == false
+    this.actionsService.pushUndo({
+      direction: direction,
+      card: card
+    });
+    this.actionsService.resetRedos();
     if (!direction) { this.missed.push(card); }
   }
 

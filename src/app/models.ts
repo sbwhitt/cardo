@@ -1,3 +1,8 @@
+export interface Action {
+  direction: boolean;
+  card: Card;
+}
+
 export interface Card {
   id: number;
   german: string;

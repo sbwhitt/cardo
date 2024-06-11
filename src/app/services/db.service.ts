@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { DataSnapshot, get, getDatabase, ref, set } from 'firebase/database';
-import { Card } from '../models/cards';
+import { get, getDatabase, ref, set } from 'firebase/database';
+import { Card } from '../models';
 import { AuthService } from './auth.service';
 
 @Injectable({
