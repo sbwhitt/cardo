@@ -1,7 +1,7 @@
 import { Component, EventEmitter, HostListener, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AnimationEvent } from "@angular/animations";
-import { fromEvent, map, zip } from 'rxjs';
+import { Observable, fromEvent, map, zip } from 'rxjs';
 import { flip, swipeRight, swipeLeft } from './card.animations';
 
 interface Swipe {
@@ -28,6 +28,8 @@ export class CardComponent {
   @Output() onSwiped = new EventEmitter<boolean>();
   @Output() onStarred = new EventEmitter<boolean>();
 
+  touchStart: TouchEvent | null = null;
+
   flipState: AnimState = 'inactive';
   swipeRightState: AnimState = 'inactive';
   swipeLeftState: AnimState = 'inactive';
@@ -35,20 +37,21 @@ export class CardComponent {
   flipped = false;
   showInfo = true;
 
-  ngOnInit() {
-    // https://github.com/angular/components/issues/24936
-    const element = document.getElementById('container');
-    if (!element) { return; }
-    const touchStart = fromEvent(element, 'touchstart');
-    const touchEnd = fromEvent(element, 'touchend');
-    zip(touchStart, touchEnd)
-        .pipe(
-            map(([a, b]) => ({
-                start: a as TouchEvent,
-                end: b as TouchEvent
-            }))
-        )
-        .subscribe((swipe) => { this.handleSwipe(swipe) });
+  ngOnInit() {}
+
+  @HostListener('window:touchstart', ['$event'])
+  handleTouchStart(event: TouchEvent) {
+    this.touchStart = event;
+  }
+
+  @HostListener('window:touchend', ['$event'])
+  handleTouchEnd(event: TouchEvent) {
+    if (!this.touchStart) { return; }
+    this.handleSwipe({
+      start: this.touchStart,
+      end: event
+    });
+    this.touchStart = null;
   }
 
   @HostListener('window:keydown', ['$event'])

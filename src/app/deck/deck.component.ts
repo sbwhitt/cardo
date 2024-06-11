@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { CardComponent } from '../card/card.component';
 import { CommonModule } from '@angular/common';
+import { CardComponent } from '../card/card.component';
 import { Action, Card } from '../models';
 import { CardsService } from '../services/cards.service';
 import { SettingsService } from '../services/settings.service';
@@ -84,25 +84,27 @@ export class DeckComponent {
     return ret;
   }
 
+  initDeck() {
+    this.missed = [];
+    this.actionsService.reset();
+  }
+
   dealMissed(): void {
     this.deck = this.missed;
     this.shuffle(this.deck);
-    this.missed = [];
-    this.actionsService.reset();
+    this.initDeck();
   }
 
   dealSameDeck(): void {
     this.deck = structuredClone(this.currentDeck);
     this.shuffle(this.deck);
-    this.missed = [];
-    this.actionsService.reset();
+    this.initDeck();
   }
 
   dealNewDeck(): void {
     this.deck = this.deal(this.pile);
     this.currentDeck = structuredClone(this.deck);
-    this.missed = [];
-    this.actionsService.reset();
+    this.initDeck();
   }
 
   handleSwiped(direction: boolean) {
