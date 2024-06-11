@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { NavbarComponent } from '../navbar/navbar.component';
 import { DeckComponent } from '../deck/deck.component';
 import { MenuComponent } from '../menu/menu.component';
-import { Observable } from 'rxjs';
+import { ActionsService } from '../services/actions.service';
 
 @Component({
   selector: 'app-layout',
@@ -13,9 +13,16 @@ import { Observable } from 'rxjs';
 })
 export class LayoutComponent {
   menuOpen = false;
-  actions$ = new Observable()
 
-  handleUndo() {}
+  constructor(
+    private actionsService: ActionsService
+  ) {}
 
-  handleRedo() {}
+  handleUndo() {
+    this.actionsService.applyUndo();
+  }
+
+  handleRedo() {
+    this.actionsService.applyRedo();
+  }
 }

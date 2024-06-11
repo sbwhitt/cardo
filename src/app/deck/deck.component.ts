@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { CardComponent } from '../card/card.component';
 import { CommonModule } from '@angular/common';
-import { Card } from '../models';
+import { Action, Card } from '../models';
 import { CardsService } from '../services/cards.service';
 import { SettingsService } from '../services/settings.service';
 import { ActionsService } from '../services/actions.service';
@@ -31,12 +31,22 @@ export class DeckComponent {
 
   ngOnInit() {
     this.loading = true;
+    this.actionsService.activeUndo.subscribe((res) => this.applyUndo(res));
+    this.actionsService.activeRedo.subscribe((res) => this.applyRedo(res));
     this.cardService.get().then((res: Card[]) => {
       this.cards = res;
       this.pile = structuredClone(this.cards);
       this.dealNewDeck();
       this.loading = false;
     });
+  }
+
+  applyUndo(action: Action) {
+    console.log('undo', action);
+  }
+
+  applyRedo(action: Action) {
+    console.log('redo', action);
   }
 
   getDeckSize(): number {
@@ -91,10 +101,11 @@ export class DeckComponent {
     const card = this.deck.pop();
     if (!card) { return; }
     // right == true, left == false
-    this.actionsService.push({
+    this.actionsService.pushUndo({
       direction: direction,
       card: card
     });
+    this.actionsService.resetRedos();
     if (!direction) { this.missed.push(card); }
   }
 
