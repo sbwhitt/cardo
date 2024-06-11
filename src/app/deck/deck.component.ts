@@ -42,11 +42,16 @@ export class DeckComponent {
   }
 
   applyUndo(action: Action) {
-    console.log('undo', action);
+    if (!action.direction) {
+      this.missed.splice(
+        this.missed.findIndex((m) => m.id === action.card.id), 1
+      );
+    }
+    this.deck.push(action.card);
   }
 
   applyRedo(action: Action) {
-    console.log('redo', action);
+    this.handleSwiped(action.direction);
   }
 
   getDeckSize(): number {
