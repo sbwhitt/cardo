@@ -88,18 +88,21 @@ export class DeckComponent {
     this.deck = this.missed;
     this.shuffle(this.deck);
     this.missed = [];
+    this.actionsService.reset();
   }
 
   dealSameDeck(): void {
     this.deck = structuredClone(this.currentDeck);
     this.shuffle(this.deck);
     this.missed = [];
+    this.actionsService.reset();
   }
 
   dealNewDeck(): void {
     this.deck = this.deal(this.pile);
     this.currentDeck = structuredClone(this.deck);
     this.missed = [];
+    this.actionsService.reset();
   }
 
   handleSwiped(direction: boolean) {

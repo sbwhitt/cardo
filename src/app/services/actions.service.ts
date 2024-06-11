@@ -36,6 +36,11 @@ export class ActionsService {
     this.activeRedo.next(redo);
   }
 
+  reset() {
+    this.resetUndos();
+    this.resetRedos();
+  }
+
   resetUndos() {
     this.undos = [];
   }
