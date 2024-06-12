@@ -83,9 +83,17 @@ export class CardComponent {
     this.flipState = (this.flipState === 'inactive') ? 'active' : 'inactive';
   }
 
+  editTapped(event: Event) {
+    event.stopPropagation();
+  }
+
   starTapped(event: Event) {
     event.stopPropagation();
     this.onStarred.emit(!this.starred);
+  }
+
+  infoTapped(event: Event) {
+    event.stopPropagation();
   }
 
   swipeRight() {
