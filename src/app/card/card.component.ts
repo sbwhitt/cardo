@@ -1,8 +1,7 @@
 import { Component, EventEmitter, HostListener, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AnimationEvent } from "@angular/animations";
-import { Observable, fromEvent, map, zip } from 'rxjs';
-import { flip, swipeRight, swipeLeft } from './card.animations';
+import { flip, swipeRight, swipeLeft, fadeIn } from './card.animations';
 
 interface Swipe {
   start: TouchEvent;
@@ -17,7 +16,7 @@ type AnimState = 'inactive' | 'active';
   imports: [CommonModule],
   templateUrl: './card.component.html',
   styleUrl: './card.component.scss',
-  animations: [flip, swipeRight, swipeLeft]
+  animations: [flip, swipeRight, swipeLeft, fadeIn]
 })
 export class CardComponent {
   @Input() front = 'Front';
@@ -33,9 +32,14 @@ export class CardComponent {
   flipState: AnimState = 'inactive';
   swipeRightState: AnimState = 'inactive';
   swipeLeftState: AnimState = 'inactive';
+  fadeInState: AnimState = 'inactive';
 
   flipped = false;
-  showInfo = true;
+  flipping = false;
+
+  showEdit = false;
+  showCard = true;
+  showInfo = false;
 
   ngOnInit() {}
 
@@ -80,11 +84,27 @@ export class CardComponent {
   }
 
   tap() {
+    if (!this.showCard) { return; }
     this.flipState = (this.flipState === 'inactive') ? 'active' : 'inactive';
+  }
+
+  menuClose(event: Event) {
+    event.stopPropagation();
+    this.fade();
+  }
+
+  revealCard() {
+    this.showEdit = false;
+    this.showCard = true;
+    this.showInfo = false;
   }
 
   editTapped(event: Event) {
     event.stopPropagation();
+    this.fade();
+    this.showEdit = true;
+    this.showCard = false;
+    this.showInfo = false;
   }
 
   starTapped(event: Event) {
@@ -94,6 +114,10 @@ export class CardComponent {
 
   infoTapped(event: Event) {
     event.stopPropagation();
+    this.fade();
+    this.showEdit = false;
+    this.showCard = false;
+    this.showInfo = true;
   }
 
   swipeRight() {
@@ -102,6 +126,10 @@ export class CardComponent {
 
   swipeLeft() {
     this.swipeLeftState = (this.swipeLeftState === 'inactive') ? 'active' : 'inactive';
+  }
+
+  fade() {
+    this.fadeInState = (this.fadeInState === 'inactive') ? 'active' : 'inactive';
   }
 
   emitSwiped(event: AnimationEvent) {
