@@ -42,6 +42,10 @@ export class DeckComponent {
     });
   }
 
+  getStarred(): Card[] {
+    return this.cards.filter((card) => card.starred);
+  }
+
   applyUndo(action: Action) {
     if (!action.direction) {
       this.missed.splice(
@@ -118,6 +122,7 @@ export class DeckComponent {
 
   dealNewDeck(): void {
     this.deck = this.deal(this.pile);
+    console.log(this.deck);
     this.currentDeck = structuredClone(this.deck);
     this.initDeck();
   }

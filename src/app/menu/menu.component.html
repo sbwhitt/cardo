@@ -1,5 +1,9 @@
 <form class="menu-container" [formGroup]="menuForm" [@drop]="getDropState()">
   <div class="row">
+    <p class="label" style="margin-right: 1rem;">Deal from starred cards only?</p>
+    <app-action-slider [active]="getDealFromStarred()" (click)="toggleDealFromStarred()"></app-action-slider>
+  </div>
+  <div class="row">
     <p class="label" style="margin-right: 1rem;">English on front?</p>
     <app-action-slider [active]="getEnglishFront()" (click)="toggleEnglishFront()"></app-action-slider>
   </div>

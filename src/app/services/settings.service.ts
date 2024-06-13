@@ -4,17 +4,18 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class SettingsService {
-  private deckSize = 10;
+  private dealFromStarred = false;
   private englishFront = true;
+  private deckSize = 10;
 
   constructor() { }
 
-  getDeckSize(): number {
-    return this.deckSize;
+  getDealFromStarred(): boolean {
+    return this.dealFromStarred;
   }
 
-  setDeckSize(size: number) {
-    this.deckSize = size;
+  setDealFromStarred(val: boolean) {
+    this.dealFromStarred = val;
   }
 
   getEnglishFront(): boolean {
@@ -23,5 +24,13 @@ export class SettingsService {
 
   setEnglishFront(val: boolean) {
     this.englishFront = val;
+  }
+
+  getDeckSize(): number {
+    return this.deckSize;
+  }
+
+  setDeckSize(size: number) {
+    this.deckSize = size;
   }
 }
