@@ -310,6 +310,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 --------------------------------------------------------------------------------
+Package: @angular/forms
+License: "MIT"
+
+
+--------------------------------------------------------------------------------
 Package: @angular/animations
 License: "MIT"
 
@@ -317,11 +322,6 @@ License: "MIT"
 --------------------------------------------------------------------------------
 Package: @firebase/database
 License: "Apache-2.0"
-
-
---------------------------------------------------------------------------------
-Package: @angular/forms
-License: "MIT"
 
 
 --------------------------------------------------------------------------------

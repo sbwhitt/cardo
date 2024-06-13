@@ -5,11 +5,12 @@ import { Action, Card } from '../models';
 import { CardsService } from '../services/cards.service';
 import { SettingsService } from '../services/settings.service';
 import { ActionsService } from '../services/actions.service';
+import { TypeColorPipe } from '../pipes/type-color.pipe';
 
 @Component({
   selector: 'app-deck',
   standalone: true,
-  imports: [CommonModule, CardComponent],
+  imports: [CommonModule, CardComponent, TypeColorPipe],
   templateUrl: './deck.component.html',
   styleUrl: './deck.component.scss'
 })
@@ -52,6 +53,20 @@ export class DeckComponent {
 
   applyRedo(action: Action) {
     this.handleSwiped(action.direction);
+  }
+
+  refreshWorkingCards() {
+    for (let local of [this.currentDeck, this.deck, this.missed]) {
+      for (let i = 0; i < local.length; i++) { local[i] = this.cards[local[i].id]; }
+    }
+  }
+
+  updateCard(card: Card) {
+    this.cardService.update(card).then(() => {
+      this.cards[card.id] = card;
+      this.refreshWorkingCards();
+    })
+    .catch((err) => alert('update failed! ' + err));
   }
 
   getDeckSize(): number {
@@ -119,21 +134,12 @@ export class DeckComponent {
     if (!direction) { this.missed.push(card); }
   }
 
-  handleStarred(val: boolean, card: Card, index: number) {
+  handleStarred(val: boolean, card: Card, deckIndex: number) {
     card.starred = val;
-    this.cards[card.id] = card;
-    this.currentDeck[index] = card;
-    this.cardService.update(card);
+    this.updateCard(card);
   }
 
-  getColor(type: string): string {
-    switch (type) {
-      case 'masculine': { return 'lightblue'; }
-      case 'feminine': { return 'lightpink'; }
-      case 'neuter': { return 'palegoldenrod'; }
-      case 'verb': { return 'plum'; }
-      case 'other': { return 'lightgreen'; }
-      default: { return 'gray'; }
-    }
+  handleEdited(newCard: Card, deckIndex: number) {
+    this.updateCard(newCard);
   }
 }

@@ -8,10 +8,11 @@
         <app-card
           *ngIf="i === deck.length-1"
           [card]="card"
-          [color]="getColor(card.type)"
+          [color]="card.type | typeColor"
           [englishFirst]="getEnglishFirst()"
           (onSwiped)="handleSwiped($event)"
           (onStarred)="handleStarred($event, card, i)"
+          (onEdited)="handleEdited($event, i)"
         ></app-card>
       </ng-container>
     </div>
