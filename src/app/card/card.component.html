@@ -43,7 +43,7 @@
   </div>
   <span
     *ngIf="showEdit || showInfo"
-    class="card-menu"
+    [class]="flipped ? 'card-menu' : 'card-menu back'"
     [@fadeIn]="fadeInState"
     (@fadeIn.done)="fadeInState === 'inactive' ? revealCard() : null"
   >
