@@ -2,6 +2,7 @@ import { Component, EventEmitter, HostListener, Input, Output } from '@angular/c
 import { CommonModule } from '@angular/common';
 import { AnimationEvent } from "@angular/animations";
 import { flip, swipeRight, swipeLeft, fadeIn } from './card.animations';
+import { Card } from '../models';
 
 interface Swipe {
   start: TouchEvent;
@@ -19,10 +20,9 @@ type AnimState = 'inactive' | 'active';
   animations: [flip, swipeRight, swipeLeft, fadeIn]
 })
 export class CardComponent {
-  @Input() front = 'Front';
-  @Input() back = 'Back';
-  @Input() color = 'lightpink'
-  @Input() starred = false;
+  @Input() card!: Card;
+  @Input() color!: string;
+  @Input() englishFirst!: boolean;
 
   @Output() onSwiped = new EventEmitter<boolean>();
   @Output() onStarred = new EventEmitter<boolean>();
@@ -83,6 +83,14 @@ export class CardComponent {
     }
   }
 
+  getFront(): string {
+    return this.englishFirst ? this.card.english : this.card.german;
+  }
+
+  getBack(): string {
+    return this.englishFirst ? this.card.german : this.card.english;
+  }
+
   tap() {
     if (!this.showCard) { return; }
     this.flipState = (this.flipState === 'inactive') ? 'active' : 'inactive';
@@ -109,7 +117,7 @@ export class CardComponent {
 
   starTapped(event: Event) {
     event.stopPropagation();
-    this.onStarred.emit(!this.starred);
+    this.onStarred.emit(!this.card.starred);
   }
 
   infoTapped(event: Event) {

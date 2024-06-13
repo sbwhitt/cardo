@@ -13,6 +13,7 @@
     border-radius: 10px;
     box-shadow: 0px 1px 2px gray;
     word-wrap: break-word;
+    overflow-y: scroll;
 }
 
 .card-content {
@@ -41,4 +42,14 @@
     flex-direction: row;
     justify-content: space-between;
     margin-bottom: 0.25rem;
+}
+
+.sent-ger {
+    font-size: 30px;
+    font-weight: 400;
+}
+
+.sent-eng {
+    font-size: 24px;
+    font-weight: 300;
 }
