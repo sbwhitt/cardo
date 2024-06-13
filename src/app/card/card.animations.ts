@@ -36,3 +36,14 @@ export const swipeLeft = trigger('swipeLeft', [
   transition('active => inactive', animate('400ms ease-out')),
   transition('inactive => active', animate('400ms ease-in'))
 ]);
+
+export const fadeIn = trigger('fadeIn', [
+  state('active', style({
+    opacity: '100%'
+  })),
+  state('inactive', style({
+    opacity: '0%'
+  })),
+  transition('active => inactive', animate('200ms ease-out')),
+  transition('inactive => active', animate('200ms ease-in'))
+]);

@@ -7,15 +7,26 @@
 .card-container {
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: space-between;
     text-align: center;
     height: 100%;
     border-radius: 10px;
     box-shadow: 0px 1px 2px gray;
     word-wrap: break-word;
+    overflow-y: scroll;
+}
+
+// hide scrollbar style
+// https://stackoverflow.com/questions/16670931/hide-scroll-bar-but-while-still-being-able-to-scroll
+.card-container::-webkit-scrollbar { 
+    display: none;  /* Safari and Chrome */
 }
 
 .card-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100%;
     font-size: 32px;
     padding: 1rem;
 }
@@ -34,11 +45,39 @@
 }
 
 .btn-row {
-    position: absolute;
-    bottom: 0;
     width: 100%;
     display: flex;
     flex-direction: row;
-    justify-content: center;
-    margin-bottom: 1rem;
+    justify-content: space-between;
+    margin-bottom: 0.25rem;
+}
+
+.card-menu {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin: 1rem 1rem 0 1rem;
+}
+
+.edit-form {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 0.5rem;
+}
+
+.card-input {
+    background: #ffffff10;
+    border: solid 1px black;
+}
+
+.sent-ger {
+    font-size: 30px;
+    font-weight: 400;
+}
+
+.sent-eng {
+    font-size: 24px;
+    font-weight: 300;
 }

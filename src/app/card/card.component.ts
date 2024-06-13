@@ -1,8 +1,10 @@
 import { Component, EventEmitter, HostListener, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AnimationEvent } from "@angular/animations";
-import { Observable, fromEvent, map, zip } from 'rxjs';
-import { flip, swipeRight, swipeLeft } from './card.animations';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { flip, swipeRight, swipeLeft, fadeIn } from './card.animations';
+import { Card } from '../models';
+import { TypeColorPipe } from '../pipes/type-color.pipe';
 
 interface Swipe {
   start: TouchEvent;
@@ -14,30 +16,54 @@ type AnimState = 'inactive' | 'active';
 @Component({
   selector: 'app-card',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, ReactiveFormsModule, TypeColorPipe],
   templateUrl: './card.component.html',
   styleUrl: './card.component.scss',
-  animations: [flip, swipeRight, swipeLeft]
+  animations: [flip, swipeRight, swipeLeft, fadeIn]
 })
 export class CardComponent {
-  @Input() front = 'Front';
-  @Input() back = 'Back';
-  @Input() color = 'lightpink'
-  @Input() starred = false;
+  @Input() card!: Card;
+  @Input() color!: string;
+  @Input() englishFirst!: boolean;
 
   @Output() onSwiped = new EventEmitter<boolean>();
   @Output() onStarred = new EventEmitter<boolean>();
+  @Output() onEdited = new EventEmitter<Card>();
+
+  editForm!: FormGroup;
+  typeOptions = [
+    'masculine',
+    'feminine',
+    'neuter',
+    'verb',
+    'other'
+  ];
 
   touchStart: TouchEvent | null = null;
 
   flipState: AnimState = 'inactive';
   swipeRightState: AnimState = 'inactive';
   swipeLeftState: AnimState = 'inactive';
+  fadeInState: AnimState = 'inactive';
 
   flipped = false;
-  showInfo = true;
+  flipping = false;
 
-  ngOnInit() {}
+  showEdit = false;
+  showCard = true;
+  showInfo = false;
+
+  ngOnInit() {
+    this.editForm = new FormGroup({
+      english: new FormControl(this.card.english, Validators.required),
+      german: new FormControl(this.card.german, Validators.required),
+      type: new FormControl(this.card.type, Validators.required),
+      ger_sent_1: new FormControl(this.card.ger_sent_1, Validators.required),
+      eng_sent_1: new FormControl(this.card.eng_sent_1, Validators.required),
+      ger_sent_2: new FormControl(this.card.ger_sent_2),
+      eng_sent_2: new FormControl(this.card.eng_sent_2)
+    });
+  }
 
   @HostListener('window:touchstart', ['$event'])
   handleTouchStart(event: TouchEvent) {
@@ -56,6 +82,7 @@ export class CardComponent {
 
   @HostListener('window:keydown', ['$event'])
   handleKeyDown(event: KeyboardEvent) {
+    if (!this.showCard) { return; }
     if (event.key === "ArrowUp" || event.key === "ArrowDown") {
       this.tap();
     }
@@ -79,13 +106,58 @@ export class CardComponent {
     }
   }
 
+  getFront(): string {
+    return this.englishFirst ? this.card.english : this.card.german;
+  }
+
+  getBack(): string {
+    return this.englishFirst ? this.card.german : this.card.english;
+  }
+
   tap() {
+    if (!this.showCard) { return; }
     this.flipState = (this.flipState === 'inactive') ? 'active' : 'inactive';
+  }
+
+  menuClose(event: Event) {
+    event.stopPropagation();
+    this.fade();
+  }
+
+  saveEdit(event: Event) {
+    const card = {
+      ...this.card,
+      ...this.editForm.value
+    };
+    this.onEdited.emit(card);
+    this.menuClose(event);
+  }
+
+  revealCard() {
+    this.showEdit = false;
+    this.showCard = true;
+    this.showInfo = false;
+  }
+
+  editTapped(event: Event) {
+    event.stopPropagation();
+    this.fade();
+    this.showEdit = true;
+    this.showCard = false;
+    this.showInfo = false;
   }
 
   starTapped(event: Event) {
     event.stopPropagation();
-    this.onStarred.emit(!this.starred);
+    this.onStarred.emit(!this.card.starred);
+  }
+
+  infoTapped(event: Event) {
+    event.stopPropagation();
+    this.fade();
+    this.showEdit = false;
+    this.showCard = false;
+    this.showInfo = true;
   }
 
   swipeRight() {
@@ -94,6 +166,10 @@ export class CardComponent {
 
   swipeLeft() {
     this.swipeLeftState = (this.swipeLeftState === 'inactive') ? 'active' : 'inactive';
+  }
+
+  fade() {
+    this.fadeInState = (this.fadeInState === 'inactive') ? 'active' : 'inactive';
   }
 
   emitSwiped(event: AnimationEvent) {
