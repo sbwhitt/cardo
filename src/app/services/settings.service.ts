@@ -1,21 +1,25 @@
 import { Injectable } from '@angular/core';
+import { Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SettingsService {
-  private dealFromStarred = false;
+  private dealStarred = false;
   private englishFront = true;
   private deckSize = 10;
 
+  dealStarredChanged = new Subject<void>();
+
   constructor() { }
 
-  getDealFromStarred(): boolean {
-    return this.dealFromStarred;
+  getDealStarred(): boolean {
+    return this.dealStarred;
   }
 
-  setDealFromStarred(val: boolean) {
-    this.dealFromStarred = val;
+  setDealStarred(val: boolean) {
+    this.dealStarred = val;
+    this.dealStarredChanged.next();
   }
 
   getEnglishFront(): boolean {

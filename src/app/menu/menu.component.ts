@@ -32,11 +32,11 @@ export class MenuComponent {
   }
 
   getDealFromStarred(): boolean {
-    return this.settingsService.getDealFromStarred();
+    return this.settingsService.getDealStarred();
   }
 
   toggleDealFromStarred() {
-    this.settingsService.setDealFromStarred(!this.settingsService.getDealFromStarred());
+    this.settingsService.setDealStarred(!this.settingsService.getDealStarred());
   }
 
   getEnglishFront(): boolean {
