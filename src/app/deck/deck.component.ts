@@ -149,6 +149,10 @@ export class DeckComponent {
     if (!direction) { this.missed.push(card); }
   }
 
+  getDeckProgress() {
+    return (1 + Math.abs(this.deck.length - this.getDeckSize())) * 10 + '%';
+  }
+
   handleCardUpdated(newCard: Card) {
     this.updateCard(newCard);
   }
