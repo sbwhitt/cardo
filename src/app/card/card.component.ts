@@ -27,8 +27,7 @@ export class CardComponent {
   @Input() englishFirst!: boolean;
 
   @Output() onSwiped = new EventEmitter<boolean>();
-  @Output() onStarred = new EventEmitter<boolean>();
-  @Output() onEdited = new EventEmitter<Card>();
+  @Output() onUpdated = new EventEmitter<Card>();
 
   editForm!: FormGroup;
   typeOptions = [
@@ -127,11 +126,10 @@ export class CardComponent {
   }
 
   saveEdit(event: Event) {
-    const card = {
+    this.onUpdated.emit({
       ...this.card,
       ...this.editForm.value
-    };
-    this.onEdited.emit(card);
+    });
     this.menuClose(event);
   }
 
@@ -151,7 +149,10 @@ export class CardComponent {
 
   starTapped(event: Event) {
     event.stopPropagation();
-    this.onStarred.emit(!this.card.starred);
+    this.onUpdated.emit({
+      ...this.card,
+      starred: !this.card.starred
+    });
   }
 
   infoTapped(event: Event) {

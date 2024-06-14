@@ -34,12 +34,28 @@ export class DeckComponent {
     this.loading = true;
     this.actionsService.activeUndo.subscribe((res) => this.applyUndo(res));
     this.actionsService.activeRedo.subscribe((res) => this.applyRedo(res));
+    this.settingsService.dealStarredChanged.subscribe(() => this.initAndDeal());
     this.cardService.get().then((res: Card[]) => {
       this.cards = res;
-      this.pile = structuredClone(this.cards);
-      this.dealNewDeck();
+      this.initAndDeal();
       this.loading = false;
-    });
+    })
+    .catch((err) => alert('Failed to get cards from database! ' + err));
+  }
+
+  initPile() {
+    this.settingsService.getDealStarred() ?
+      this.pile = structuredClone(this.getStarred()) :
+      this.pile = structuredClone(this.cards);
+  }
+
+  initAndDeal() {
+    this.initPile();
+    this.dealNewDeck();
+  }
+
+  getStarred(): Card[] {
+    return this.cards.filter((card) => card.starred);
   }
 
   applyUndo(action: Action) {
@@ -66,15 +82,15 @@ export class DeckComponent {
       this.cards[card.id] = card;
       this.refreshWorkingCards();
     })
-    .catch((err) => alert('update failed! ' + err));
-  }
-
-  getDeckSize(): number {
-    return this.settingsService.getDeckSize();
+    .catch((err) => alert('Card update failed! ' + err));
   }
 
   getEnglishFirst(): boolean {
     return this.settingsService.getEnglishFront();
+  }
+
+  getDeckSize(): number {
+    return this.settingsService.getDeckSize();
   }
 
   // https://stackoverflow.com/a/12646864
@@ -88,13 +104,12 @@ export class DeckComponent {
 
   // deals from inputted array, removes dealt items from source
   deal(cards: Card[]): Card[] {
-    this.missed = [];
     const ret: Card[] = [];
     for (let i = 0; i < this.getDeckSize(); i++) {
       if (cards.length === 0) { return ret; }
       const choice = Math.floor(Math.random()*cards.length);
-      cards.splice(choice, 1);
       ret.push(cards[choice]);
+      cards.splice(choice, 1);
     }
     return ret;
   }
@@ -134,12 +149,7 @@ export class DeckComponent {
     if (!direction) { this.missed.push(card); }
   }
 
-  handleStarred(val: boolean, card: Card, deckIndex: number) {
-    card.starred = val;
-    this.updateCard(card);
-  }
-
-  handleEdited(newCard: Card, deckIndex: number) {
+  handleCardUpdated(newCard: Card) {
     this.updateCard(newCard);
   }
 }

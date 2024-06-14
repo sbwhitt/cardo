@@ -1,20 +1,25 @@
 import { Injectable } from '@angular/core';
+import { Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SettingsService {
-  private deckSize = 10;
+  private dealStarred = false;
   private englishFront = true;
+  private deckSize = 10;
+
+  dealStarredChanged = new Subject<void>();
 
   constructor() { }
 
-  getDeckSize(): number {
-    return this.deckSize;
+  getDealStarred(): boolean {
+    return this.dealStarred;
   }
 
-  setDeckSize(size: number) {
-    this.deckSize = size;
+  setDealStarred(val: boolean) {
+    this.dealStarred = val;
+    this.dealStarredChanged.next();
   }
 
   getEnglishFront(): boolean {
@@ -23,5 +28,13 @@ export class SettingsService {
 
   setEnglishFront(val: boolean) {
     this.englishFront = val;
+  }
+
+  getDeckSize(): number {
+    return this.deckSize;
+  }
+
+  setDeckSize(size: number) {
+    this.deckSize = size;
   }
 }

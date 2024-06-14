@@ -31,17 +31,25 @@ export class MenuComponent {
     return this.open ? 'active' : 'inactive';
   }
 
-  setDeckSize() {
-    const deckSize = this.menuForm.controls.deckSize.value;
-    if (!deckSize) { return; }
-    this.settingsService.setDeckSize(deckSize);
+  getDealFromStarred(): boolean {
+    return this.settingsService.getDealStarred();
   }
 
-  getEnglishFront() {
+  toggleDealFromStarred() {
+    this.settingsService.setDealStarred(!this.settingsService.getDealStarred());
+  }
+
+  getEnglishFront(): boolean {
     return this.settingsService.getEnglishFront();
   }
 
   toggleEnglishFront() {
     this.settingsService.setEnglishFront(!this.settingsService.getEnglishFront());
+  }
+
+  setDeckSize() {
+    const deckSize = this.menuForm.controls.deckSize.value;
+    if (!deckSize) { return; }
+    this.settingsService.setDeckSize(deckSize);
   }
 }

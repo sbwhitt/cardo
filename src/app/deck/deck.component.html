@@ -11,14 +11,20 @@
           [color]="card.type | typeColor"
           [englishFirst]="getEnglishFirst()"
           (onSwiped)="handleSwiped($event)"
-          (onStarred)="handleStarred($event, card, i)"
-          (onEdited)="handleEdited($event, i)"
+          (onUpdated)="handleCardUpdated($event)"
         ></app-card>
       </ng-container>
     </div>
   }
   @else {
     <div class="options">
+      <div style="text-align: center;" *ngIf="pile.length === 0">
+        <p>You're out of cards!</p>
+        <button
+          class="btn"
+          (click)="initAndDeal()"
+        >Reset card pile?</button>
+      </div>
       <button
         class="btn"
         *ngIf="missed.length > 0"
@@ -26,10 +32,12 @@
       >Deal {{missed.length}} missed cards?</button>
       <button
         class="btn"
+        *ngIf="currentDeck.length > 0"
         (click)="dealSameDeck()"
       >Deal same deck?</button>
       <button
         class="btn"
+        *ngIf="pile.length > 0"
         (click)="dealNewDeck()"
       >Deal another {{this.getDeckSize()}}?</button>
     </div>
