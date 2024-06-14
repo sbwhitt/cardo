@@ -73,10 +73,12 @@ export class CardComponent {
   @HostListener('window:touchend', ['$event'])
   handleTouchEnd(event: TouchEvent) {
     if (!this.touchStart) { return; }
-    this.handleSwipe({
-      start: this.touchStart,
-      end: event
-    });
+    if (this.showCard) {
+      this.handleSwipe({
+        start: this.touchStart,
+        end: event
+      });
+    }
     this.touchStart = null;
   }
 
