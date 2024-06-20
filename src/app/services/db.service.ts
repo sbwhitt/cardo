@@ -17,6 +17,7 @@ export class DbService {
   }
 
   async getCards(): Promise<object | null> {
+    console.log(this.getCardsLocation());
     const db = getDatabase(this.authService.firebaseApp);
     const dbRef = ref(db, this.getCardsLocation());
     return await get(dbRef).then((snap) => {

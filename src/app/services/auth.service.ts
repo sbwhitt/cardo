@@ -47,7 +47,8 @@ export class AuthService {
     const token = localStorage.getItem('jwt');
     if (!token || this.jwtHelper.isTokenExpired(token)) { return false; }
     const decoded = this.jwtHelper.decodeToken(token);
-    if (!decoded.email || this.parseEmail(decoded.email) !== this.user) { return false; }
+    if (!decoded.email) { return false; }
+    this.user = this.parseEmail(decoded.email);
     return true;
   }
 
