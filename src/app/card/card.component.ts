@@ -24,7 +24,7 @@ type AnimState = 'inactive' | 'active';
 export class CardComponent {
   @Input() card!: Card;
   @Input() color!: string;
-  @Input() englishFirst!: boolean;
+  @Input() baseFirst!: boolean;
 
   @Output() onSwiped = new EventEmitter<boolean>();
   @Output() onUpdated = new EventEmitter<Card>();
@@ -54,13 +54,13 @@ export class CardComponent {
 
   ngOnInit() {
     this.editForm = new FormGroup({
-      english: new FormControl(this.card.english, Validators.required),
-      german: new FormControl(this.card.german, Validators.required),
+      base: new FormControl(this.card.base, Validators.required),
+      goal: new FormControl(this.card.goal, Validators.required),
       type: new FormControl(this.card.type, Validators.required),
-      ger_sent_1: new FormControl(this.card.ger_sent_1, Validators.required),
-      eng_sent_1: new FormControl(this.card.eng_sent_1, Validators.required),
-      ger_sent_2: new FormControl(this.card.ger_sent_2),
-      eng_sent_2: new FormControl(this.card.eng_sent_2)
+      goal_sent_1: new FormControl(this.card.goal_sent_1, Validators.required),
+      base_sent_1: new FormControl(this.card.base_sent_1, Validators.required),
+      goal_sent_2: new FormControl(this.card.goal_sent_2),
+      base_sent_2: new FormControl(this.card.base_sent_2)
     });
   }
 
@@ -108,11 +108,11 @@ export class CardComponent {
   }
 
   getFront(): string {
-    return this.englishFirst ? this.card.english : this.card.german;
+    return this.baseFirst ? this.card.base : this.card.goal;
   }
 
   getBack(): string {
-    return this.englishFirst ? this.card.german : this.card.english;
+    return this.baseFirst ? this.card.goal : this.card.base;
   }
 
   tap() {

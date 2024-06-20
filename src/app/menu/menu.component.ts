@@ -39,12 +39,12 @@ export class MenuComponent {
     this.settingsService.setDealStarred(!this.settingsService.getDealStarred());
   }
 
-  getEnglishFront(): boolean {
-    return this.settingsService.getEnglishFront();
+  getBaseFront(): boolean {
+    return this.settingsService.getBaseFront();
   }
 
-  toggleEnglishFront() {
-    this.settingsService.setEnglishFront(!this.settingsService.getEnglishFront());
+  toggleBaseFront() {
+    this.settingsService.setBaseFront(!this.settingsService.getBaseFront());
   }
 
   setDeckSize() {

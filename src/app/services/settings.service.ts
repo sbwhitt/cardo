@@ -6,7 +6,7 @@ import { Subject } from 'rxjs';
 })
 export class SettingsService {
   private dealStarred = false;
-  private englishFront = true;
+  private baseFront = true;
   private deckSize = 10;
 
   dealStarredChanged = new Subject<void>();
@@ -22,12 +22,12 @@ export class SettingsService {
     this.dealStarredChanged.next();
   }
 
-  getEnglishFront(): boolean {
-    return this.englishFront;
+  getBaseFront(): boolean {
+    return this.baseFront;
   }
 
-  setEnglishFront(val: boolean) {
-    this.englishFront = val;
+  setBaseFront(val: boolean) {
+    this.baseFront = val;
   }
 
   getDeckSize(): number {

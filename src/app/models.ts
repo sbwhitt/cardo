@@ -5,12 +5,12 @@ export interface Action {
 
 export interface Card {
   id: number;
-  german: string;
-  english: string;
+  goal: string;
+  base: string;
   type: 'masculine' | 'feminine' | 'neuter' | 'verb' | 'other';
-  ger_sent_1: string;
-  eng_sent_1: string;
-  ger_sent_2: string;
-  eng_sent_2: string;
+  goal_sent_1: string;
+  base_sent_1: string;
+  goal_sent_2: string;
+  base_sent_2: string;
   starred: boolean;
 }

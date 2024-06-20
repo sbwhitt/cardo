@@ -23,23 +23,23 @@ conn.close()
 def to_card(fields, i):
     return {
         "id": i,
-        "german": fields[0],
-        "english": fields[1],
-        "ger_sent_1": fields[2],
-        "eng_sent_1": fields[3],
-        "ger_sent_2": fields[4],
-        "eng_sent_2": fields[5],
+        "goal": fields[0],
+        "base": fields[1],
+        "goal_sent_1": fields[2],
+        "base_sent_1": fields[3],
+        "goal_sent_2": fields[4],
+        "base_sent_2": fields[5],
         "starred": False
     }
 
 def add_types(card):
-    if card["german"][:3] == "der":
+    if card["goal"][:3] == "der":
         card["type"] = "masculine"
-    elif card["german"][:3] == "die":
+    elif card["goal"][:3] == "die":
         card["type"] = "feminine"
-    elif card["german"][:3] == "das":
+    elif card["goal"][:3] == "das":
         card["type"] = "neuter"
-    elif card["english"][:3] == "to ":
+    elif card["base"][:3] == "to ":
         card["type"] = "verb"
     else:
         card["type"] = "other"

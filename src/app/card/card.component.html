@@ -50,8 +50,8 @@
     <!-- edit screen -->
     <div *ngIf="showEdit">
       <form class="edit-form" [formGroup]="editForm">
-        <input class="card-input" type="text" formControlName="english" placeholder="english" />
-        <input class="card-input" type="text" formControlName="german" placeholder="german" />
+        <input class="card-input" type="text" formControlName="base" placeholder="base" />
+        <input class="card-input" type="text" formControlName="goal" placeholder="goal" />
         <select class="card-input" [value]="card.type" formControlName="type">
           <option
             *ngFor="let option of typeOptions"
@@ -59,18 +59,18 @@
             [style.background]="option | typeColor"
           >{{option}}</option>
         </select>
-        <textarea class="card-input" type="text" formControlName="ger_sent_1" placeholder="german sentence 1"></textarea>
-        <textarea class="card-input" type="text" formControlName="eng_sent_1" placeholder="english sentence 1"></textarea>
-        <textarea class="card-input" type="text" formControlName="ger_sent_2" placeholder="german sentence 2"></textarea>
-        <textarea class="card-input" type="text" formControlName="eng_sent_2" placeholder="english sentence 2"></textarea>
+        <textarea class="card-input" type="text" formControlName="goal_sent_1" placeholder="goal sentence 1"></textarea>
+        <textarea class="card-input" type="text" formControlName="base_sent_1" placeholder="base sentence 1"></textarea>
+        <textarea class="card-input" type="text" formControlName="goal_sent_2" placeholder="goal sentence 2"></textarea>
+        <textarea class="card-input" type="text" formControlName="base_sent_2" placeholder="base sentence 2"></textarea>
       </form>
     </div>
     <!-- info screen -->
     <div *ngIf="showInfo">
-      <p class="sent-ger">{{card.ger_sent_1}}</p>
-      <p class="sent-eng">{{card.eng_sent_1}}</p>
-      <p class="sent-ger">{{card.ger_sent_2}}</p>
-      <p class="sent-eng">{{card.eng_sent_2}}</p>
+      <p class="sent-ger">{{card.goal_sent_1}}</p>
+      <p class="sent-eng">{{card.base_sent_1}}</p>
+      <p class="sent-ger">{{card.goal_sent_2}}</p>
+      <p class="sent-eng">{{card.base_sent_2}}</p>
     </div>
     <div *ngIf="!showCard" class="btn-row">
       <button

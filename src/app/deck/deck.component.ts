@@ -85,8 +85,8 @@ export class DeckComponent {
     .catch((err) => alert('Card update failed! ' + err));
   }
 
-  getEnglishFirst(): boolean {
-    return this.settingsService.getEnglishFront();
+  getBaseFirst(): boolean {
+    return this.settingsService.getBaseFront();
   }
 
   getDeckSize(): number {
