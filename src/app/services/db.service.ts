@@ -12,9 +12,13 @@ export class DbService {
     private authService: AuthService
   ) {}
 
+  private getCardsLocation(): string {
+    return this.authService.user + '/cards';
+  }
+
   async getCards(): Promise<object | null> {
     const db = getDatabase(this.authService.firebaseApp);
-    const dbRef = ref(db, 'cards');
+    const dbRef = ref(db, this.getCardsLocation());
     return await get(dbRef).then((snap) => {
       if (snap.exists()) { return snap.toJSON(); }
       return null;
@@ -23,6 +27,6 @@ export class DbService {
 
   async updateCard(card: Card): Promise<void> {
     const db = getDatabase(this.authService.firebaseApp);
-    return set(ref(db, 'cards/' + card.id), card);
+    return set(ref(db, this.getCardsLocation() + '/' + card.id), card);
   }
 }

@@ -10,6 +10,7 @@ import { firebaseConfig } from '../../environment/environment';
 })
 export class AuthService {
   firebaseApp: FirebaseApp = initializeApp(firebaseConfig);
+  user!: string;
 
   constructor(
     public jwtHelper: JwtHelperService,
@@ -20,11 +21,16 @@ export class AuthService {
     });
   }
 
+  private parseEmail(email: string): string {
+    return email.replaceAll('@', '_').replaceAll('.', '_');
+  }
+
   async signIn(email: string, password: string) {
     const auth = getAuth(this.firebaseApp);
     return signInWithEmailAndPassword(auth, email, password).then(async (res) => {
       const token = await res.user.getIdToken();
       localStorage.setItem('jwt', token);
+      this.user = this.parseEmail(email);
       return true;
     })
     .catch(() => {
@@ -41,7 +47,7 @@ export class AuthService {
     const token = localStorage.getItem('jwt');
     if (!token || this.jwtHelper.isTokenExpired(token)) { return false; }
     const decoded = this.jwtHelper.decodeToken(token);
-    if (!decoded.email) { return false; }
+    if (!decoded.email || this.parseEmail(decoded.email) !== this.user) { return false; }
     return true;
   }
 
