@@ -8,6 +8,6 @@ export class EnvironmentService {
   constructor() { }
 
   isLocal(): boolean {
-    return location.hostname === "localhost";
+    return location.hostname !== "localhost";
   }
 }

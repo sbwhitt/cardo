@@ -1,8 +1,9 @@
 :host {
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: space-between;
     text-align: center;
+    height: 100vh;
 }
 
 .signin {

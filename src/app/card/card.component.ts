@@ -57,8 +57,8 @@ export class CardComponent {
       base: new FormControl(this.card.base, Validators.required),
       goal: new FormControl(this.card.goal, Validators.required),
       type: new FormControl(this.card.type, Validators.required),
-      goal_sent_1: new FormControl(this.card.goal_sent_1, Validators.required),
-      base_sent_1: new FormControl(this.card.base_sent_1, Validators.required),
+      goal_sent_1: new FormControl(this.card.goal_sent_1),
+      base_sent_1: new FormControl(this.card.base_sent_1),
       goal_sent_2: new FormControl(this.card.goal_sent_2),
       base_sent_2: new FormControl(this.card.base_sent_2)
     });

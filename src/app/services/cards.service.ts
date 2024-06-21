@@ -15,9 +15,9 @@ export class CardsService {
     private envService: EnvironmentService
   ) {}
 
-  async get(): Promise<Card[]> {
+  async get(sample?: boolean): Promise<Card[]> {
     if (this.locals && this.locals.length > 0) { return this.locals; }
-    if (this.envService.isLocal()) {
+    if (sample || this.envService.isLocal()) {
       // @ts-ignored
       this.locals = cardsLocal.cards;
       return this.locals ? this.locals : [];

@@ -3,6 +3,7 @@ import { NavbarComponent } from '../navbar/navbar.component';
 import { DeckComponent } from '../deck/deck.component';
 import { MenuComponent } from '../menu/menu.component';
 import { ActionsService } from '../services/actions.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-layout',
@@ -13,10 +14,18 @@ import { ActionsService } from '../services/actions.service';
 })
 export class LayoutComponent {
   menuOpen = false;
+  sample = false;
 
   constructor(
-    private actionsService: ActionsService
+    private actionsService: ActionsService,
+    private router: Router
   ) {}
+
+  ngOnInit() {
+    if (this.router.url === '/sample') {
+      this.sample = true;
+    }
+  }
 
   handleUndo() {
     this.actionsService.applyUndo();

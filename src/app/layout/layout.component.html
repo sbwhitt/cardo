@@ -1,6 +1,6 @@
 <div class="content">
   <app-menu [open]="menuOpen" (closePressed)="menuOpen = false"></app-menu>
-  <app-deck></app-deck>
+  <app-deck [sample]="sample"></app-deck>
   <app-navbar
     (menuPressed)="menuOpen = true"
     (undoPressed)="handleUndo()"
