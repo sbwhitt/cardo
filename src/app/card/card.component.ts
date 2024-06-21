@@ -2,6 +2,7 @@ import { Component, EventEmitter, HostListener, Input, Output } from '@angular/c
 import { CommonModule } from '@angular/common';
 import { AnimationEvent } from "@angular/animations";
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { CardsService } from '../services/cards.service';
 import { flip, swipeRight, swipeLeft, fadeIn } from './card.animations';
 import { Card } from '../models';
 import { TypeColorPipe } from '../pipes/type-color.pipe';
@@ -30,13 +31,6 @@ export class CardComponent {
   @Output() onUpdated = new EventEmitter<Card>();
 
   editForm!: FormGroup;
-  typeOptions = [
-    'masculine',
-    'feminine',
-    'neuter',
-    'verb',
-    'other'
-  ];
 
   touchStart: TouchEvent | null = null;
 
@@ -52,7 +46,14 @@ export class CardComponent {
   showCard = true;
   showInfo = false;
 
+  typeOptions!: string[];
+
+  constructor(
+    private cardService: CardsService
+  ) {}
+
   ngOnInit() {
+    this.typeOptions = this.cardService.typeOptions;
     this.editForm = new FormGroup({
       base: new FormControl(this.card.base, Validators.required),
       goal: new FormControl(this.card.goal, Validators.required),

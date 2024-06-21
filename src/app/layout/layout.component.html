@@ -1,9 +1,14 @@
 <div class="content">
-  <app-menu [open]="menuOpen" (closePressed)="menuOpen = false"></app-menu>
+  <app-menu
+    [settingsOpen]="settingsMenuOpen"
+    [addCardOpen]="addCardMenuOpen"
+    (closePressed)="closeMenu()"
+  ></app-menu>
   <app-deck [sample]="sample"></app-deck>
   <app-navbar
-    (menuPressed)="menuOpen = true"
+    (settingsPressed)="toggleSettingsMenu()"
     (undoPressed)="handleUndo()"
     (redoPressed)="handleRedo()"
+    (addPressed)="toggleAddCardMenu()"
   ></app-navbar>
 </div>

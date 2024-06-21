@@ -13,7 +13,8 @@ import { Router } from '@angular/router';
   styleUrl: './layout.component.scss'
 })
 export class LayoutComponent {
-  menuOpen = false;
+  settingsMenuOpen = false;
+  addCardMenuOpen = false;
   sample = false;
 
   constructor(
@@ -25,6 +26,19 @@ export class LayoutComponent {
     if (this.router.url === '/sample') {
       this.sample = true;
     }
+  }
+
+  closeMenu() {
+    this.settingsMenuOpen = false;
+    this.addCardMenuOpen = false;
+  }
+
+  toggleSettingsMenu() {
+    this.settingsMenuOpen = !this.settingsMenuOpen;
+  }
+
+  toggleAddCardMenu() {
+    this.addCardMenuOpen = !this.addCardMenuOpen;
   }
 
   handleUndo() {

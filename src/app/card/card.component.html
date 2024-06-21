@@ -50,19 +50,19 @@
     <!-- edit screen -->
     <div *ngIf="showEdit">
       <form class="edit-form" [formGroup]="editForm">
-        <input class="card-input" type="text" formControlName="base" placeholder="base" />
-        <input class="card-input" type="text" formControlName="goal" placeholder="goal" />
-        <select class="card-input" [value]="card.type" formControlName="type">
+        <input class="border-input" type="text" formControlName="base" placeholder="base" />
+        <input class="border-input" type="text" formControlName="goal" placeholder="goal" />
+        <select class="border-input" [value]="card.type" formControlName="type">
           <option
             *ngFor="let option of typeOptions"
             [selected]="option === card.type"
             [style.background]="option | typeColor"
           >{{option}}</option>
         </select>
-        <textarea class="card-input" type="text" formControlName="goal_sent_1" placeholder="goal sentence 1"></textarea>
-        <textarea class="card-input" type="text" formControlName="base_sent_1" placeholder="base sentence 1"></textarea>
-        <textarea class="card-input" type="text" formControlName="goal_sent_2" placeholder="goal sentence 2"></textarea>
-        <textarea class="card-input" type="text" formControlName="base_sent_2" placeholder="base sentence 2"></textarea>
+        <textarea class="border-input" type="text" formControlName="goal_sent_1" placeholder="goal sentence 1"></textarea>
+        <textarea class="border-input" type="text" formControlName="base_sent_1" placeholder="base sentence 1"></textarea>
+        <textarea class="border-input" type="text" formControlName="goal_sent_2" placeholder="goal sentence 2"></textarea>
+        <textarea class="border-input" type="text" formControlName="base_sent_2" placeholder="base sentence 2"></textarea>
       </form>
     </div>
     <!-- info screen -->

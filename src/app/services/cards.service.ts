@@ -3,12 +3,23 @@ import { Card } from '../models';
 import { DbService } from './db.service';
 import { EnvironmentService } from './environment.service';
 import * as cardsLocal from './sample.json';
+import { Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CardsService {
   private locals: Card[] | null = null;
+
+  public cardAdded = new Subject<Card>();
+
+  public typeOptions = [
+    'masculine',
+    'feminine',
+    'neuter',
+    'verb',
+    'other'
+  ];
 
   constructor(
     private dbService: DbService,
@@ -23,7 +34,8 @@ export class CardsService {
       return this.locals ? this.locals : [];
     }
     return this.dbService.getCards().then((res: any) => {
-      return Object.values(res);
+      this.locals = Object.values(res);
+      return this.locals;
     });
   }
 
@@ -34,5 +46,20 @@ export class CardsService {
       return;
     }
     return this.dbService.updateCard(card);
+  }
+
+  async add(card: Card): Promise<any> {
+    this.locals = await this.get();
+    card.id = this.locals.length;
+    if (this.envService.isLocal()) {
+      this.locals.push(card);
+      this.cardAdded.next(card);
+      return;
+    }
+    return this.dbService.addCard(card)
+    .then(() => {
+      this.locals?.push(card);
+      this.cardAdded.next(card)
+    });
   }
 }

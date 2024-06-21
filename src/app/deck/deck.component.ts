@@ -43,6 +43,9 @@ export class DeckComponent {
       this.loading = false;
     })
     .catch((err) => alert('Failed to get cards from database! ' + err));
+    this.cardService.cardAdded.subscribe((card) => {
+      this.initAndDeal();
+    });
   }
 
   initPile() {
