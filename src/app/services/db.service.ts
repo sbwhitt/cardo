@@ -25,7 +25,14 @@ export class DbService {
     });
   }
 
+  // same for now, but may be used differently in the future
+
   async updateCard(card: Card): Promise<void> {
+    const db = getDatabase(this.authService.firebaseApp);
+    return set(ref(db, this.getCardsLocation() + '/' + card.id), card);
+  }
+
+  async addCard(card: Card): Promise<void> {
     const db = getDatabase(this.authService.firebaseApp);
     return set(ref(db, this.getCardsLocation() + '/' + card.id), card);
   }

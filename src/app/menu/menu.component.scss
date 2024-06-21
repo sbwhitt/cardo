@@ -10,7 +10,6 @@
     height: 100%;
     background: $primary;
     z-index: 1;
-    gap: 0.5rem;
 }
 
 .row {
@@ -18,4 +17,14 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+}
+
+.add-card-form {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    margin: 1rem 0;
+    text-align: center;
+    gap: 0.5rem;
 }
