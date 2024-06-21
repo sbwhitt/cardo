@@ -3,7 +3,6 @@
     flex-direction: column;
     justify-content: space-between;
     text-align: center;
-    height: 100vh;
 }
 
 .signin {
@@ -14,4 +13,10 @@
 
 .submit {
     background-color: lightgreen;
+}
+
+.sample {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
 }
