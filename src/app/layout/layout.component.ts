@@ -1,14 +1,15 @@
 import { Component } from '@angular/core';
+import { NotificationsComponent } from '../notifications/notifications.component';
+import { MenuComponent } from '../menu/menu.component';
 import { NavbarComponent } from '../navbar/navbar.component';
 import { DeckComponent } from '../deck/deck.component';
-import { MenuComponent } from '../menu/menu.component';
 import { ActionsService } from '../services/actions.service';
 import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-layout',
   standalone: true,
-  imports: [MenuComponent, NavbarComponent, DeckComponent],
+  imports: [NotificationsComponent, MenuComponent, NavbarComponent, DeckComponent],
   templateUrl: './layout.component.html',
   styleUrl: './layout.component.scss'
 })

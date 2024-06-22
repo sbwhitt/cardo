@@ -1,0 +1,9 @@
+<div class="container">
+  <div class="bubble-container">
+    <div
+      class="bubble"
+      *ngFor="let n of notifications"
+      [style]="{ background: n.success ? 'aquamarine' : 'lightcoral' }"
+    >{{n.message}}</div>
+  </div>
+</div>
