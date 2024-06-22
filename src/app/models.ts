@@ -1,3 +1,8 @@
+export interface Notification {
+  message: string;
+  success: boolean;
+}
+
 export interface Action {
   direction: boolean;
   card: Card;

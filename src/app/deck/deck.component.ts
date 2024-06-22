@@ -2,9 +2,10 @@ import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CardComponent } from '../card/card.component';
 import { Action, Card } from '../models';
+import { ActionsService } from '../services/actions.service';
 import { CardsService } from '../services/cards.service';
 import { SettingsService } from '../services/settings.service';
-import { ActionsService } from '../services/actions.service';
+import { NotificationsService } from '../services/notifications.service';
 import { TypeColorPipe } from '../pipes/type-color.pipe';
 
 @Component({
@@ -29,6 +30,7 @@ export class DeckComponent {
   constructor(
     private actionsService: ActionsService,
     private cardService: CardsService,
+    private notificationService: NotificationsService,
     private settingsService: SettingsService
   ) {}
 
@@ -85,9 +87,15 @@ export class DeckComponent {
   updateCard(card: Card) {
     this.cardService.update(card).then(() => {
       this.cards[card.id] = card;
+      this.notificationService.push({ message: 'Card updated!', success: true });
       this.refreshWorkingCards();
     })
-    .catch((err) => alert('Card update failed! ' + err));
+    .catch((err) => {
+      this.notificationService.push({
+        message: 'Card update failed! ' + err, success: false
+      });
+      alert('Card update failed! ' + err);
+    });
   }
 
   getBaseFirst(): boolean {

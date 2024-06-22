@@ -5,6 +5,7 @@ import { drop } from './menu.animations';
 import { SettingsService } from '../services/settings.service';
 import { ActionSliderComponent } from './action-slider/action-slider.component';
 import { CardsService } from '../services/cards.service';
+import { NotificationsService } from '../services/notifications.service';
 import { TypeColorPipe } from '../pipes/type-color.pipe';
 import { CardType } from '../models';
 
@@ -42,6 +43,7 @@ export class MenuComponent {
 
   constructor(
     private cardsService: CardsService,
+    private notificationsService: NotificationsService,
     private settingsService: SettingsService
   ) {}
 
@@ -79,8 +81,12 @@ export class MenuComponent {
     };
     this.cardsService.add(card).then(() => {
       this.close();
+      this.notificationsService.push({ message: 'Card added!', success: true });
     })
     .catch((err) => {
+      this.notificationsService.push({
+        message: 'Error adding card to db! ' + err, success: false
+      });
       alert('Error adding card to db! ' + err);
     });
   }
@@ -109,5 +115,6 @@ export class MenuComponent {
     const deckSize = this.settingsForm.controls.deckSize.value;
     if (!deckSize) { return; }
     this.settingsService.setDeckSize(deckSize);
+    this.notificationsService.push({ message: 'Deck size updated!', success: true });
   }
 }
