@@ -32,9 +32,9 @@ export class MenuComponent {
   });
 
   addCardForm = new FormGroup({
-    base: new FormControl("", [Validators.required, Validators.minLength(1)]),
-    goal: new FormControl("", Validators.required),
-    type: new FormControl<CardType>("masculine", Validators.required),
+    base: new FormControl(null, [Validators.required, Validators.minLength(1)]),
+    goal: new FormControl(null, Validators.required),
+    type: new FormControl("masculine", Validators.required),
     goal_sent_1: new FormControl(""),
     base_sent_1: new FormControl(""),
     goal_sent_2: new FormControl(""),
@@ -51,9 +51,14 @@ export class MenuComponent {
     this.typeOptions = this.cardsService.typeOptions;
   }
 
+  resetAddForm() {
+    this.addCardForm.reset();
+    this.addCardForm.patchValue({ type: "masculine" });
+  }
+
   close() {
     if (this.addCardOpen) {
-      this.addCardForm.reset();
+      this.resetAddForm();
     }
     this.settingsOpen = false;
     this.addCardOpen = false;
@@ -79,6 +84,7 @@ export class MenuComponent {
         this.addCardForm.controls.base_sent_2.value : "",
       starred: false,
     };
+    // @ts-ignore
     this.cardsService.add(card).then(() => {
       this.close();
       this.notificationsService.push({ message: 'Card added!', success: true });
