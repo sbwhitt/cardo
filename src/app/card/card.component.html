@@ -50,8 +50,16 @@
     <!-- edit screen -->
     <div *ngIf="showEdit">
       <form class="edit-form" [formGroup]="editForm">
-        <input class="border-input" type="text" formControlName="base" placeholder="base" />
-        <input class="border-input" type="text" formControlName="goal" placeholder="goal" />
+        <input
+          class="border-input"
+          type="text"
+          formControlName="base"
+          [placeholder]="'base' | language | async" />
+        <input
+          class="border-input"
+          type="text"
+          formControlName="goal"
+          [placeholder]="'goal' | language | async" />
         <select class="border-input" [value]="card.type" formControlName="type">
           <option
             *ngFor="let option of typeOptions"

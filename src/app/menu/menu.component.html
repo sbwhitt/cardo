@@ -6,7 +6,7 @@
         <app-action-slider [active]="getDealFromStarred()" (click)="toggleDealFromStarred()"></app-action-slider>
       </div>
       <div class="row">
-        <p class="label" style="margin-right: 1rem;">Base on front?</p>
+        <p class="label" style="margin-right: 1rem;">{{'base' | language | async}} on front?</p>
         <app-action-slider [active]="getBaseFront()" (click)="toggleBaseFront()"></app-action-slider>
       </div>
       <div class="row">
@@ -19,8 +19,16 @@
   @else if (addCardOpen) {
     <form class="add-card-form" [formGroup]="addCardForm">
       <h2>Add card</h2>
-      <input class="border-input" type="text" formControlName="base" placeholder="base" />
-      <input class="border-input" type="text" formControlName="goal" placeholder="goal" />
+      <input
+          class="border-input"
+          type="text"
+          formControlName="base"
+          [placeholder]="'base' | language | async" />
+        <input
+          class="border-input"
+          type="text"
+          formControlName="goal"
+          [placeholder]="'goal' | language | async" />
       <select class="border-input" formControlName="type">
         <option
           *ngFor="let option of typeOptions"

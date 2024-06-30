@@ -16,6 +16,23 @@ export class DbService {
     return this.authService.user + '/cards';
   }
 
+  private async getLanguage(type: 'base_lang' | 'goal_lang'): Promise<object | null> {
+    const db = getDatabase(this.authService.firebaseApp);
+    const dbRef = ref(db, this.authService.user + "/" + type);
+    return await get(dbRef).then((snap) => {
+      if (snap.exists()) { return snap.toJSON(); }
+      return null;
+    });
+  }
+
+  async getBaseLanguage(): Promise<object | null> {
+    return this.getLanguage('base_lang');
+  }
+
+  async getGoalLanguage(): Promise<object | null> {
+    return this.getLanguage('goal_lang');
+  }
+
   async getCards(): Promise<object | null> {
     const db = getDatabase(this.authService.firebaseApp);
     const dbRef = ref(db, this.getCardsLocation());

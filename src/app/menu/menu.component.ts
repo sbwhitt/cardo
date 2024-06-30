@@ -7,12 +7,12 @@ import { ActionSliderComponent } from './action-slider/action-slider.component';
 import { CardsService } from '../services/cards.service';
 import { NotificationsService } from '../services/notifications.service';
 import { TypeColorPipe } from '../pipes/type-color.pipe';
-import { CardType } from '../models';
+import { LanguagePipe } from '../pipes/language.pipe';
 
 @Component({
   selector: 'app-menu',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, ActionSliderComponent, TypeColorPipe],
+  imports: [CommonModule, ReactiveFormsModule, ActionSliderComponent, TypeColorPipe, LanguagePipe],
   templateUrl: './menu.component.html',
   styleUrl: './menu.component.scss',
   animations: [drop]

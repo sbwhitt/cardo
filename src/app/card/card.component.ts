@@ -6,6 +6,7 @@ import { CardsService } from '../services/cards.service';
 import { flip, swipeRight, swipeLeft, fadeIn } from './card.animations';
 import { Card } from '../models';
 import { TypeColorPipe } from '../pipes/type-color.pipe';
+import { LanguagePipe } from '../pipes/language.pipe';
 
 interface Swipe {
   start: TouchEvent;
@@ -17,7 +18,7 @@ type AnimState = 'inactive' | 'active';
 @Component({
   selector: 'app-card',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, TypeColorPipe],
+  imports: [CommonModule, ReactiveFormsModule, TypeColorPipe, LanguagePipe],
   templateUrl: './card.component.html',
   styleUrl: './card.component.scss',
   animations: [flip, swipeRight, swipeLeft, fadeIn]
