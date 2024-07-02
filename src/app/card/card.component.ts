@@ -26,7 +26,7 @@ type AnimState = 'inactive' | 'active';
 export class CardComponent {
   @Input() card!: Card;
   @Input() color!: string;
-  @Input() baseFirst!: boolean;
+  @Input() baseFront!: boolean;
 
   @Output() onSwiped = new EventEmitter<boolean>();
   @Output() onUpdated = new EventEmitter<Card>();
@@ -110,11 +110,11 @@ export class CardComponent {
   }
 
   getFront(): string {
-    return this.baseFirst ? this.card.base : this.card.goal;
+    return this.baseFront ? this.card.base : this.card.goal;
   }
 
   getBack(): string {
-    return this.baseFirst ? this.card.goal : this.card.base;
+    return this.baseFront ? this.card.goal : this.card.base;
   }
 
   tap() {

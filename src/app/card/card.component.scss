@@ -4,7 +4,7 @@
     width: 100%;
 }
 
-.card-container {
+.card {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -18,7 +18,7 @@
 
 // hide scrollbar style
 // https://stackoverflow.com/questions/16670931/hide-scroll-bar-but-while-still-being-able-to-scroll
-.card-container::-webkit-scrollbar { 
+.card::-webkit-scrollbar { 
     display: none;  /* Safari and Chrome */
 }
 
