@@ -2,11 +2,11 @@
   <p>loading...</p>
 }
 @else {
-  @if (expanded) {
+  @if (expandedCard && expanded) {
     <app-card
       style="height: 100%;"
-      [card]="expanded"
-      [color]="expanded.type | typeColor"
+      [card]="expandedCard"
+      [color]="expandedCard.type | typeColor"
       [baseFront]="getBaseFront()"
       (onSwiped)="handleSwiped()"
       (onUpdated)="handleUpdateCard($event)"
@@ -15,9 +15,9 @@
   @else {
     <div
       class="list-card"
-      *ngFor="let card of results"
+      *ngFor="let card of results.slice(0, maxCards)"
       [style]="{ background: card.type | typeColor }"
-      (click)="expand(card)"
+      (click)="expandCard(card)"
     >
       {{ getBaseFront() ? card.base : card.goal }}
     </div> 

@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Observable } from 'rxjs';
 import { CardComponent } from '../card/card.component';
@@ -17,12 +17,17 @@ import { Card } from '../models';
 })
 export class ListComponent {
   loading = false;
+  maxCards = 100;
   cards: Card[] = [];
   results: Card[] = [];
-  expanded!: Card | null;
+  expandedCard: Card | null = null;
+  scroll = 0;
 
+  @Input() expanded = false;
   @Input() sample = false;
   @Input() query!: Observable<string>;
+
+  @Output() expandedChange = new EventEmitter<boolean>();
 
   constructor(
     private cardService: CardsService,
@@ -55,15 +60,17 @@ export class ListComponent {
     });
   }
 
-  expand(card: Card) {
-    this.expanded = card;
+  expandCard(card: Card) {
+    this.expanded = true;
+    this.expandedChange.emit(true);
+    this.expandedCard = card;
   }
 
   updateCard(card: Card) {
     this.cardService.update(card).then(() => {
       const index = this.results.findIndex((c) => c.id === card.id);
       this.results[index] = card;
-      this.expanded = card;
+      this.expandCard(card);
       this.notificationService.push({ message: 'Card updated!', success: true });
     })
     .catch((err) => {
@@ -75,7 +82,9 @@ export class ListComponent {
   }
 
   handleSwiped() {
-    this.expanded = null;
+    this.expanded = false;
+    this.expandedChange.emit(false);
+    this.expandedCard = null;
   }
 
   handleUpdateCard(card: Card) {

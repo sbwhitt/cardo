@@ -14,6 +14,7 @@ export class NavbarComponent {
   @Input() search = false;
 
   @Output() listPressed = new EventEmitter<void>();
+  @Output() backPressed = new EventEmitter<void>();
   @Output() settingsPressed = new EventEmitter<void>();
   @Output() undoPressed = new EventEmitter<void>();
   @Output() redoPressed = new EventEmitter<void>();

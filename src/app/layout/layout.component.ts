@@ -17,6 +17,7 @@ import { ActionsService } from '../services/actions.service';
 })
 export class LayoutComponent {
   listOpen = false;
+  listExpanded = false;
   settingsMenuOpen = false;
   addCardMenuOpen = false;
   sample = false;
@@ -35,6 +36,12 @@ export class LayoutComponent {
 
   toggleList() {
     this.listOpen = !this.listOpen;
+  }
+
+  handleBack() {
+    this.listExpanded ?
+      this.listExpanded = false :
+      this.listOpen = false;
   }
 
   closeMenu() {
