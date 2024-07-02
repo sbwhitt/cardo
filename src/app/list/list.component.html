@@ -1,0 +1,25 @@
+@if (loading) {
+  <p>loading...</p>
+}
+@else {
+  @if (expanded) {
+    <app-card
+      style="height: 100%;"
+      [card]="expanded"
+      [color]="expanded.type | typeColor"
+      [baseFront]="getBaseFront()"
+      (onSwiped)="handleSwiped()"
+      (onUpdated)="handleUpdateCard($event)"
+    ></app-card>
+  }
+  @else {
+    <div
+      class="list-card"
+      *ngFor="let card of results"
+      [style]="{ background: card.type | typeColor }"
+      (click)="expand(card)"
+    >
+      {{ getBaseFront() ? card.base : card.goal }}
+    </div> 
+  }
+}

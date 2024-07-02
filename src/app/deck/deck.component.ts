@@ -98,7 +98,7 @@ export class DeckComponent {
     });
   }
 
-  getBaseFirst(): boolean {
+  getbaseFront(): boolean {
     return this.settingsService.getBaseFront();
   }
 

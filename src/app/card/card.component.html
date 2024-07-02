@@ -1,7 +1,7 @@
 <div
   (click)="handleTouch()"
   id="container"
-  [class]="flipped ? 'card-container' : 'card-container back'"
+  [class]="flipped ? 'card' : 'card back'"
   [style]="{ background: color }"
   [@flip]="flipState"
   (@flip.start)="flipping = true;"

@@ -9,7 +9,7 @@
           *ngIf="i === deck.length-1"
           [card]="card"
           [color]="card.type | typeColor"
-          [baseFirst]="getBaseFirst()"
+          [baseFront]="getbaseFront()"
           (onSwiped)="handleSwiped($event)"
           (onUpdated)="handleCardUpdated($event)"
         ></app-card>
