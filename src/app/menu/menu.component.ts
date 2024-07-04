@@ -48,6 +48,11 @@ export class MenuComponent {
   ) {}
 
   ngOnInit() {
+    this.settingsService.loaded.subscribe(() => {
+      this.settingsForm.patchValue({
+        deckSize: this.settingsService.getDeckSize()
+      });
+    });
     this.typeOptions = this.cardsService.typeOptions;
   }
 
@@ -93,7 +98,6 @@ export class MenuComponent {
       this.notificationsService.push({
         message: 'Error adding card to db! ' + err, success: false
       });
-      alert('Error adding card to db! ' + err);
     });
   }
 
@@ -121,6 +125,5 @@ export class MenuComponent {
     const deckSize = this.settingsForm.controls.deckSize.value;
     if (!deckSize) { return; }
     this.settingsService.setDeckSize(deckSize);
-    this.notificationsService.push({ message: 'Deck size updated!', success: true });
   }
 }

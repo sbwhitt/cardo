@@ -1,3 +1,9 @@
+export interface Settings {
+  base_front: boolean;
+  deal_starred: boolean;
+  deck_size: number;
+}
+
 export interface Notification {
   message: string;
   success: boolean;

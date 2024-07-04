@@ -1,40 +1,75 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
+import { DbService } from './db.service';
+import { Settings } from '../models';
+import { NotificationsService } from './notifications.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SettingsService {
-  private dealStarred = false;
-  private baseFront = true;
-  private deckSize = 10;
+  private settings: Settings = {
+    base_front: true,
+    deal_starred: false,
+    deck_size: 10
+  };
 
+  loaded = new Subject<void>();
   dealStarredChanged = new Subject<void>();
 
-  constructor() { }
+  constructor(
+    private dbService: DbService,
+    private notificationsService: NotificationsService
+  ) {
+    this.dbService.getSettings().then((res) => {
+      if (!res) { return; }
+      this.settings = res;
+      this.loaded.next();
+    });
+  }
+
+  private async update(updated: Settings): Promise<void> {
+    return this.dbService.setSettings(updated).then(() => {
+      this.settings = updated;
+      this.notificationsService.push({ message: 'Settings updated!', success: true });
+    }).catch(() => {
+      this.notificationsService.push({ message: 'Failed to update settings!', success: false });
+    });
+  }
 
   getDealStarred(): boolean {
-    return this.dealStarred;
+    return this.settings.deal_starred;
   }
 
   setDealStarred(val: boolean) {
-    this.dealStarred = val;
-    this.dealStarredChanged.next();
+    const updated = {
+      ...this.settings,
+      deal_starred: val
+    };
+    this.update(updated).then(() => this.dealStarredChanged.next());
   }
 
   getBaseFront(): boolean {
-    return this.baseFront;
+    return this.settings.base_front;
   }
 
   setBaseFront(val: boolean) {
-    this.baseFront = val;
+    const updated = {
+      ...this.settings,
+      base_front: val
+    };
+    this.update(updated);
   }
 
   getDeckSize(): number {
-    return this.deckSize;
+    return this.settings.deck_size;
   }
 
   setDeckSize(size: number) {
-    this.deckSize = size;
+    const updated = {
+      ...this.settings,
+      deck_size: size
+    };
+    this.update(updated);
   }
 }

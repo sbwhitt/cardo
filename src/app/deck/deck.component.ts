@@ -27,6 +27,8 @@ export class DeckComponent {
   currentDeck: Card[] = []; // current deck stored, immutable
   missed: Card[] = [];      // missed cards within active deck
 
+  deckProgress = '0%';
+
   constructor(
     private actionsService: ActionsService,
     private cardService: CardsService,
@@ -36,6 +38,12 @@ export class DeckComponent {
 
   ngOnInit() {
     this.loading = true;
+    this.settingsService.loaded.subscribe(() => {
+      this.init();
+    });
+  }
+
+  init() {
     this.actionsService.activeUndo.subscribe((res) => this.applyUndo(res));
     this.actionsService.activeRedo.subscribe((res) => this.applyRedo(res));
     this.settingsService.dealStarredChanged.subscribe(() => this.initAndDeal());
@@ -43,9 +51,8 @@ export class DeckComponent {
       this.cards = res;
       this.initAndDeal();
       this.loading = false;
-    })
-    .catch((err) => alert('Failed to get cards from database! ' + err));
-    this.cardService.cardAdded.subscribe((card) => {
+    }).catch((err) => alert('Failed to get cards from database! ' + err));
+    this.cardService.cardAdded.subscribe(() => {
       this.initAndDeal();
     });
   }
@@ -72,6 +79,7 @@ export class DeckComponent {
       );
     }
     this.deck.push(action.card);
+    this.setDeckProgress();
   }
 
   applyRedo(action: Action) {
@@ -94,7 +102,6 @@ export class DeckComponent {
       this.notificationService.push({
         message: 'Card update failed! ' + err, success: false
       });
-      alert('Card update failed! ' + err);
     });
   }
 
@@ -130,6 +137,7 @@ export class DeckComponent {
   initDeck() {
     this.missed = [];
     this.actionsService.reset();
+    this.setDeckProgress();
   }
 
   dealMissed(): void {
@@ -160,10 +168,12 @@ export class DeckComponent {
     });
     this.actionsService.resetRedos();
     if (!direction) { this.missed.push(card); }
+    this.setDeckProgress();
   }
 
-  getDeckProgress() {
-    return (1 + Math.abs(this.deck.length - this.getDeckSize())) * 10 + '%';
+  setDeckProgress() {
+    const deckSize = this.getDeckSize();
+    this.deckProgress = 100*((1 + Math.abs(this.deck.length - deckSize)) / deckSize) + '%';
   }
 
   handleCardUpdated(newCard: Card) {

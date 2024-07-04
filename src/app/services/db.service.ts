@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { get, getDatabase, ref, set } from 'firebase/database';
-import { Card } from '../models';
+import { Card, Settings } from '../models';
 import { AuthService } from './auth.service';
 
 @Injectable({
@@ -18,7 +18,7 @@ export class DbService {
 
   private async getLanguage(type: 'base_lang' | 'goal_lang'): Promise<object | null> {
     const db = getDatabase(this.authService.firebaseApp);
-    const dbRef = ref(db, this.authService.user + "/" + type);
+    const dbRef = ref(db, this.authService.user + '/' + type);
     return await get(dbRef).then((snap) => {
       if (snap.exists()) { return snap.toJSON(); }
       return null;
@@ -31,6 +31,21 @@ export class DbService {
 
   async getGoalLanguage(): Promise<object | null> {
     return this.getLanguage('goal_lang');
+  }
+
+  async getSettings(): Promise<any | null> {
+    const db = getDatabase(this.authService.firebaseApp);
+    const dbRef = ref(db, this.authService.user + '/settings');
+    return await get(dbRef).then((snap) => {
+      if (snap.exists()) { return snap.toJSON(); }
+      return null;
+    });
+  }
+
+  async setSettings(settings: Settings): Promise<void> {
+    const db = getDatabase(this.authService.firebaseApp);
+    const dbRef = ref(db, this.authService.user + '/settings');
+    return await set(dbRef, settings);
   }
 
   async getCards(): Promise<object | null> {
