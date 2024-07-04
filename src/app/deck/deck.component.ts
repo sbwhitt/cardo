@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { LoadingComponent } from '../loading/loading.component';
 import { CardComponent } from '../card/card.component';
 import { Action, Card } from '../models';
 import { ActionsService } from '../services/actions.service';
@@ -11,7 +12,7 @@ import { TypeColorPipe } from '../pipes/type-color.pipe';
 @Component({
   selector: 'app-deck',
   standalone: true,
-  imports: [CommonModule, CardComponent, TypeColorPipe],
+  imports: [CommonModule, LoadingComponent, CardComponent, TypeColorPipe],
   templateUrl: './deck.component.html',
   styleUrl: './deck.component.scss'
 })

@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Observable } from 'rxjs';
+import { LoadingComponent } from '../loading/loading.component';
 import { CardComponent } from '../card/card.component';
 import { CardsService } from '../services/cards.service';
 import { NotificationsService } from '../services/notifications.service';
@@ -11,7 +12,7 @@ import { Card } from '../models';
 @Component({
   selector: 'app-list',
   standalone: true,
-  imports: [CommonModule, CardComponent, TypeColorPipe],
+  imports: [CommonModule, LoadingComponent, CardComponent, TypeColorPipe],
   templateUrl: './list.component.html',
   styleUrl: './list.component.scss'
 })
