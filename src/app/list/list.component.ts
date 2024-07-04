@@ -37,6 +37,13 @@ export class ListComponent {
 
   ngOnInit() {
     this.loading = true;
+    if (this.settingsService.loading) {
+      this.settingsService.loaded.subscribe(() => this.init());
+    }
+    else { this.init(); }
+  }
+
+  init() {
     this.cardService.get(this.sample).then((res: Card[]) => {
       this.cards = res;
       this.results = this.cards;

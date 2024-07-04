@@ -14,6 +14,7 @@ export class SettingsService {
     deck_size: 10
   };
 
+  loading = true;
   loaded = new Subject<void>();
   dealStarredChanged = new Subject<void>();
 
@@ -24,6 +25,7 @@ export class SettingsService {
     this.dbService.getSettings().then((res) => {
       if (!res) { return; }
       this.settings = res;
+      this.loading = false;
       this.loaded.next();
     });
   }
