@@ -9,7 +9,7 @@ import { firebaseConfig } from '../../environment/environment';
   providedIn: 'root'
 })
 export class AuthService {
-  firebaseApp: FirebaseApp = initializeApp(firebaseConfig);
+  private firebaseApp: FirebaseApp = initializeApp(firebaseConfig);
   user!: string;
 
   constructor(
@@ -23,6 +23,11 @@ export class AuthService {
 
   private parseEmail(email: string): string {
     return email.replaceAll('@', '_').replaceAll('.', '_');
+  }
+
+  getFirebaseApp(): FirebaseApp | null {
+    if (!this.isAuthenticated()) { return null; }
+    return this.firebaseApp;
   }
 
   async signIn(email: string, password: string) {
@@ -40,6 +45,7 @@ export class AuthService {
 
   signOut() {
     const auth = getAuth(this.firebaseApp);
+    if (localStorage.getItem('jwt')) { localStorage.removeItem('jwt'); }
     auth.signOut();
   }
 

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { get, getDatabase, ref, set } from 'firebase/database';
+import { Database, get, getDatabase, ref, set } from 'firebase/database';
 import { Card, Settings } from '../models';
 import { AuthService } from './auth.service';
 
@@ -16,8 +16,16 @@ export class DbService {
     return this.authService.user + '/cards';
   }
 
+  private getDb(): Database | null {
+    const fbApp = this.authService.getFirebaseApp();
+    return fbApp ?
+      getDatabase(fbApp) :
+      null;
+  }
+
   private async getLanguage(type: 'base_lang' | 'goal_lang'): Promise<object | null> {
-    const db = getDatabase(this.authService.firebaseApp);
+    const db = this.getDb();
+    if (!db) { return null; }
     const dbRef = ref(db, this.authService.user + '/' + type);
     return await get(dbRef).then((snap) => {
       if (snap.exists()) { return snap.toJSON(); }
@@ -34,7 +42,8 @@ export class DbService {
   }
 
   async getSettings(): Promise<any | null> {
-    const db = getDatabase(this.authService.firebaseApp);
+    const db = this.getDb();
+    if (!db) { return null; }
     const dbRef = ref(db, this.authService.user + '/settings');
     return await get(dbRef).then((snap) => {
       if (snap.exists()) { return snap.toJSON(); }
@@ -43,13 +52,16 @@ export class DbService {
   }
 
   async setSettings(settings: Settings): Promise<void> {
-    const db = getDatabase(this.authService.firebaseApp);
+    const db = this.getDb();
+    if (!db) { return; }
     const dbRef = ref(db, this.authService.user + '/settings');
+    console.log(dbRef);
     return await set(dbRef, settings);
   }
 
   async getCards(): Promise<object | null> {
-    const db = getDatabase(this.authService.firebaseApp);
+    const db = this.getDb();
+    if (!db) { return null; }
     const dbRef = ref(db, this.getCardsLocation());
     return await get(dbRef).then((snap) => {
       if (snap.exists()) { return snap.toJSON(); }
@@ -60,12 +72,14 @@ export class DbService {
   // same for now, but may be used differently in the future
 
   async updateCard(card: Card): Promise<void> {
-    const db = getDatabase(this.authService.firebaseApp);
+    const db = this.getDb();
+    if (!db) { return; }
     return set(ref(db, this.getCardsLocation() + '/' + card.id), card);
   }
 
   async addCard(card: Card): Promise<void> {
-    const db = getDatabase(this.authService.firebaseApp);
+    const db = this.getDb();
+    if (!db) { return; }
     return set(ref(db, this.getCardsLocation() + '/' + card.id), card);
   }
 }

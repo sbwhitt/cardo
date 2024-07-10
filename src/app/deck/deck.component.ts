@@ -39,10 +39,10 @@ export class DeckComponent {
 
   ngOnInit() {
     this.loading = true;
-    if (this.settingsService.loading) {
+    if (this.sample || !this.settingsService.loading) { this.init(); }
+    else {
       this.settingsService.loaded.subscribe(() => this.init());
     }
-    else { this.init(); }
   }
 
   init() {
