@@ -7,6 +7,7 @@ import { NavbarComponent } from '../navbar/navbar.component';
 import { DeckComponent } from '../deck/deck.component';
 import { ListComponent } from '../list/list.component';
 import { ActionsService } from '../services/actions.service';
+import { LingueeniService } from '../services/lingueeni.service';
 
 @Component({
   selector: 'app-layout',
@@ -25,6 +26,7 @@ export class LayoutComponent {
 
   constructor(
     private actionsService: ActionsService,
+    private lingueeniService: LingueeniService,
     private router: Router
   ) {}
 
@@ -32,6 +34,7 @@ export class LayoutComponent {
     if (this.router.url === '/sample') {
       this.sample = true;
     }
+    this.lingueeniService.getTranslationFromBase('hello');
   }
 
   toggleList() {
