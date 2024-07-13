@@ -55,7 +55,6 @@ export class DbService {
     const db = this.getDb();
     if (!db) { return; }
     const dbRef = ref(db, this.authService.user + '/settings');
-    console.log(dbRef);
     return await set(dbRef, settings);
   }
 

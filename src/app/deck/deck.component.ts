@@ -70,6 +70,19 @@ export class DeckComponent {
     this.dealNewDeck();
   }
 
+  findCard(id: number): number | null {
+    let start = 0;
+    let end = this.cards.length-1;
+    while (end > start) {
+      let mid = Math.floor((end + start)/2);
+      const hit = this.cards[mid];
+      if (hit.id === id) { return hit.id; }
+      if (hit.id < id) { start = mid+1; }
+      else if (hit.id > id) { end = mid-1; }
+    }
+    return null;
+  }
+
   getStarred(): Card[] {
     return this.cards.filter((card) => card.starred);
   }
@@ -96,7 +109,12 @@ export class DeckComponent {
 
   updateCard(card: Card) {
     this.cardService.update(card).then(() => {
-      this.cards[card.id] = card;
+      const index = this.findCard(card.id);
+      if (index === null) {
+        this.notificationService.push({ message: 'Card update error!', success: false });
+        return;
+      }
+      this.cards[index] = card;
       this.notificationService.push({ message: 'Card updated!', success: true });
       this.refreshWorkingCards();
     })
