@@ -30,6 +30,7 @@ export class CardComponent {
 
   @Output() onSwiped = new EventEmitter<boolean>();
   @Output() onUpdated = new EventEmitter<Card>();
+  @Output() onDeleted = new EventEmitter<Card>();
 
   editForm!: FormGroup;
 
@@ -133,6 +134,12 @@ export class CardComponent {
       ...this.editForm.value
     });
     this.menuClose(event);
+  }
+
+  delete(event: Event) {
+    event.stopPropagation();
+    this.fade();
+    this.onDeleted.emit(this.card);
   }
 
   revealCard() {

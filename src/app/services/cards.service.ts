@@ -43,27 +43,39 @@ export class CardsService {
     });
   }
 
-  async update(card: Card): Promise<void> {
+  async update(card: Card, index: number): Promise<void> {
     if (this.envService.isLocal()) {
       this.locals = await this.get();
-      this.locals[card.id] = card;
+      this.locals[index] = card;
       return;
     }
     return this.dbService.updateCard(card);
   }
 
-  async add(card: Card): Promise<any> {
+  async add(card: Card): Promise<void> {
     this.locals = await this.get();
-    card.id = this.locals.length;
+    card.id = this.locals[this.locals.length-1].id+1;
     if (this.envService.isLocal()) {
       this.locals.push(card);
       this.cardAdded.next(card);
       return;
     }
     return this.dbService.addCard(card)
-    .then(() => {
-      this.locals?.push(card);
-      this.cardAdded.next(card)
-    });
+      .then(() => {
+        this.locals?.push(card);
+        this.cardAdded.next(card)
+      });
+  }
+
+  async delete(id: number, index: number): Promise<void> {
+    this.locals = await this.get();
+    if (this.envService.isLocal()) {
+      this.locals.splice(index, 1);
+      return;
+    }
+    return this.dbService.deleteCard(id)
+      .then(() => {
+        this.locals?.splice(index, 1);
+      });
   }
 }

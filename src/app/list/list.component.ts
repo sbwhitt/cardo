@@ -68,6 +68,20 @@ export class ListComponent {
     });
   }
 
+  findCardIndex(id: number): number | null {
+    let start = 0;
+    let end = this.cards.length-1;
+    while (end >= start) {
+      let mid = Math.floor((end + start)/2);
+      const hit = this.cards[mid];
+      if (hit.id === id) { return mid; }
+      if (hit.id < id) { start = mid+1; }
+      else if (hit.id > id) { end = mid-1; }
+    }
+    this.notificationService.push({ message: 'Couldn\'t find card!', success: false });
+    return null;
+  }
+
   expandCard(card: Card) {
     this.expanded = true;
     this.expandedChange.emit(true);
@@ -75,9 +89,9 @@ export class ListComponent {
   }
 
   updateCard(card: Card) {
-    this.cardService.update(card).then(() => {
-      const index = this.results.findIndex((c) => c.id === card.id);
-      this.results[index] = card;
+    const index = this.findCardIndex(card.id);
+    if (index === null) { return; }
+    this.cardService.update(card, index).then(() => {
       this.expandCard(card);
       this.notificationService.push({ message: 'Card updated!', success: true });
     })
@@ -89,6 +103,19 @@ export class ListComponent {
     });
   }
 
+  deleteCard(id: number) {
+    const index = this.findCardIndex(id);
+    if (index === null) { return; }
+    this.cardService.delete(id, index).then(() => {
+      this.notificationService.push({ message: 'Card deleted!', success: true });
+    })
+    .catch((err) => {
+      this.notificationService.push({
+        message: 'Failed to delete card! ' + err, success: false
+      });
+    });
+  }
+
   handleSwiped() {
     this.expanded = false;
     this.expandedChange.emit(false);
@@ -97,5 +124,10 @@ export class ListComponent {
 
   handleUpdateCard(card: Card) {
     this.updateCard(card);
+  }
+
+  handleCardDeleted(card: Card) {
+    this.deleteCard(card.id);
+    this.handleSwiped();
   }
 }
