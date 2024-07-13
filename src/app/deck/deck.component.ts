@@ -70,6 +70,20 @@ export class DeckComponent {
     this.dealNewDeck();
   }
 
+  findCardIndex(id: number): number | null {
+    let start = 0;
+    let end = this.cards.length-1;
+    while (end >= start) {
+      let mid = Math.floor((end + start)/2);
+      const hit = this.cards[mid];
+      if (hit.id === id) { return mid; }
+      if (hit.id < id) { start = mid+1; }
+      else if (hit.id > id) { end = mid-1; }
+    }
+    this.notificationService.push({ message: 'Couldn\'t find card!', success: false });
+    return null;
+  }
+
   getStarred(): Card[] {
     return this.cards.filter((card) => card.starred);
   }
@@ -90,19 +104,49 @@ export class DeckComponent {
 
   refreshWorkingCards() {
     for (let local of [this.currentDeck, this.deck, this.missed]) {
-      for (let i = 0; i < local.length; i++) { local[i] = this.cards[local[i].id]; }
+      for (let i = 0; i < local.length; i++) {
+        const index = this.findCardIndex(local[i].id);
+        if (index === null) { return; }
+        local[i] = this.cards[index];
+      }
+    }
+  }
+
+  removeFromWorkingCards(id: number) {
+    for (let local of [this.currentDeck, this.deck, this.missed]) {
+      for (let i = 0; i < local.length; i++) {
+        if (local[i].id !== id) { continue; }
+        local.splice(i, 1);
+        break;
+      }
     }
   }
 
   updateCard(card: Card) {
-    this.cardService.update(card).then(() => {
-      this.cards[card.id] = card;
+    const index = this.findCardIndex(card.id);
+    if (index === null) { return; }
+    this.cardService.update(card, index).then(() => {
       this.notificationService.push({ message: 'Card updated!', success: true });
       this.refreshWorkingCards();
     })
     .catch((err) => {
       this.notificationService.push({
         message: 'Card update failed! ' + err, success: false
+      });
+    });
+  }
+
+  deleteCard(id: number) {
+    const index = this.findCardIndex(id);
+    if (index === null) { return; }
+    this.cardService.delete(id, index).then(() => {
+      this.notificationService.push({ message: 'Card deleted!', success: true });
+      this.actionsService.reset();
+      this.removeFromWorkingCards(id);
+    })
+    .catch((err) => {
+      this.notificationService.push({
+        message: 'Failed to delete card! ' + err, success: false
       });
     });
   }
@@ -174,11 +218,15 @@ export class DeckComponent {
   }
 
   setDeckProgress() {
-    const deckSize = this.getDeckSize();
+    const deckSize = this.currentDeck.length;
     this.deckProgress = 100*((1 + Math.abs(this.deck.length - deckSize)) / deckSize) + '%';
   }
 
   handleCardUpdated(newCard: Card) {
     this.updateCard(newCard);
+  }
+
+  handleCardDeleted(card: Card) {
+    this.deleteCard(card.id);
   }
 }

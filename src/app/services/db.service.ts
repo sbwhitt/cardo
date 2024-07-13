@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Database, get, getDatabase, ref, set } from 'firebase/database';
+import { Database, get, getDatabase, ref, remove, set } from 'firebase/database';
 import { Card, Settings } from '../models';
 import { AuthService } from './auth.service';
 
@@ -55,7 +55,6 @@ export class DbService {
     const db = this.getDb();
     if (!db) { return; }
     const dbRef = ref(db, this.authService.user + '/settings');
-    console.log(dbRef);
     return await set(dbRef, settings);
   }
 
@@ -81,5 +80,11 @@ export class DbService {
     const db = this.getDb();
     if (!db) { return; }
     return set(ref(db, this.getCardsLocation() + '/' + card.id), card);
+  }
+
+  async deleteCard(id: number): Promise<void> {
+    const db = this.getDb();
+    if (!db) { return; }
+    return remove(ref(db, this.getCardsLocation() + '/' + id));
   }
 }
