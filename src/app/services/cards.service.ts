@@ -4,6 +4,7 @@ import { DbService } from './db.service';
 import { EnvironmentService } from './environment.service';
 import * as cardsLocal from './sample.json';
 import { Subject } from 'rxjs';
+import { NotificationsService } from './notifications.service';
 
 @Injectable({
   providedIn: 'root'
@@ -23,7 +24,8 @@ export class CardsService {
 
   constructor(
     private dbService: DbService,
-    private envService: EnvironmentService
+    private envService: EnvironmentService,
+    private notificationsService: NotificationsService
   ) {}
 
   async get(sample?: boolean): Promise<Card[]> {
@@ -32,6 +34,7 @@ export class CardsService {
     if (sample || this.envService.isLocal()) {
       // @ts-ignored
       this.locals = cardsLocal.cards;
+      this.notificationsService.push({ message: "Samples loaded!", success: true })
       return this.locals ? this.locals : [];
     }
     return this.dbService.getCards().then((res: any) => {

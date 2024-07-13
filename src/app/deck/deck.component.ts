@@ -21,7 +21,7 @@ export class DeckComponent {
 
   @Input() sample = false;
 
-  cards: Card[] = [];       // all cards form db, source of truth, immutable
+  cards: Card[] = [];       // all cards from db, source of truth, immutable
   pile: Card[] = [];        // working pile of all cards, mutable
 
   deck: Card[] = [];        // working deck, mutable
