@@ -13,7 +13,7 @@ export class LanguagePipe implements PipeTransform {
 
   private name(code: string): string {
     switch(code) {
-      case "en-us":
+      case "en":
         return "English";
       case "es":
         return "Spanish";
