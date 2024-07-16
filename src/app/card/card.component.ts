@@ -2,6 +2,7 @@ import { Component, EventEmitter, HostListener, Input, Output } from '@angular/c
 import { CommonModule } from '@angular/common';
 import { AnimationEvent } from "@angular/animations";
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ModalComponent } from "../modal/modal.component";
 import { CardsService } from '../services/cards.service';
 import { flip, swipeRight, swipeLeft, fadeIn } from './card.animations';
 import { Card } from '../models';
@@ -18,7 +19,7 @@ type AnimState = 'inactive' | 'active';
 @Component({
   selector: 'app-card',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, TypeColorPipe, LanguagePipe],
+  imports: [CommonModule, ReactiveFormsModule, TypeColorPipe, LanguagePipe, ModalComponent],
   templateUrl: './card.component.html',
   styleUrl: './card.component.scss',
   animations: [flip, swipeRight, swipeLeft, fadeIn]
@@ -47,6 +48,7 @@ export class CardComponent {
   showEdit = false;
   showCard = true;
   showInfo = false;
+  showDelete = false;
 
   typeOptions!: string[];
 
@@ -138,6 +140,10 @@ export class CardComponent {
 
   delete(event: Event) {
     event.stopPropagation();
+    if (!this.showDelete) {
+      this.showDelete = true;
+      return;
+    }
     this.fade();
     this.onDeleted.emit(this.card);
   }
