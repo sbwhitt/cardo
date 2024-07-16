@@ -6,7 +6,8 @@ import { LanguageService } from './language.service';
   providedIn: 'root'
 })
 export class LingueeniService {
-  urlBase = 'https://lingueeni.onrender.com/api/v2';
+  primaryUrlBase = 'http://lingueeni.duckdns.org:8000/api/v2';
+  secondaryUrlBase = 'https://lingueeni.onrender.com/api/v2';
 
   constructor(
     private http: HttpClient,
@@ -14,11 +15,13 @@ export class LingueeniService {
   ) { }
 
   async getTranslationFromBase(query: string) {
+    const base = await this.languageService.getBase();
+    const goal = await this.languageService.getGoal();
     const params = new URLSearchParams({
       query,
-      src: 'en',
-      dst: 'de'
+      src: base,
+      dst: goal
     }).toString();
-    this.http.get(`${this.urlBase}/translations?${params}`).subscribe((res) => console.log(res));
+    this.http.get(`${this.primaryUrlBase}/translations?${params}`).subscribe((res) => console.log(res));
   }
 }
