@@ -44,12 +44,15 @@ export class CardsService {
   }
 
   async update(card: Card, index: number): Promise<void> {
+    this.locals = await this.get();
     if (this.envService.isLocal()) {
-      this.locals = await this.get();
       this.locals[index] = card;
       return;
     }
-    return this.dbService.updateCard(card);
+    return this.dbService.updateCard(card).then(() => {
+      if (!this.locals) { return; }
+      this.locals[index] = card
+    });
   }
 
   async add(card: Card): Promise<void> {
