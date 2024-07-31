@@ -36,10 +36,14 @@
           [style.background]="option | typeColor"
         >{{option}}</option>
       </select>
-      <textarea class="border-input" type="text" formControlName="goal_sent_1" placeholder="goal sentence 1"></textarea>
-      <textarea class="border-input" type="text" formControlName="base_sent_1" placeholder="base sentence 1"></textarea>
-      <textarea class="border-input" type="text" formControlName="goal_sent_2" placeholder="goal sentence 2"></textarea>
-      <textarea class="border-input" type="text" formControlName="base_sent_2" placeholder="base sentence 2"></textarea>
+      <textarea class="border-input" type="text" formControlName="goal_sent_1"
+        [placeholder]="('goal' | language | async) + ' sentence 1'"></textarea>
+      <textarea class="border-input" type="text" formControlName="base_sent_1"
+        [placeholder]="('base' | language | async) + ' sentence 1'"></textarea>
+      <textarea class="border-input" type="text" formControlName="goal_sent_2"
+        [placeholder]="('goal' | language | async) + ' sentence 2'"></textarea>
+      <textarea class="border-input" type="text" formControlName="base_sent_2"
+        [placeholder]="('base' | language | async) + ' sentence 2'"></textarea>
     </form>
   }
 
