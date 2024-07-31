@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Database, get, getDatabase, ref, remove, set } from 'firebase/database';
-import { Card, Settings } from '../models';
+import { Router } from '@angular/router';
 import { AuthService } from './auth.service';
+import { Card, Settings } from '../models';
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +10,8 @@ import { AuthService } from './auth.service';
 export class DbService {
 
   constructor(
-    private authService: AuthService
+    private authService: AuthService,
+    private router: Router
   ) {}
 
   private getCardsLocation(): string {
@@ -18,6 +20,7 @@ export class DbService {
 
   private getDb(): Database | null {
     const fbApp = this.authService.getFirebaseApp();
+    if (!fbApp) { this.router.navigateByUrl('/auth'); }
     return fbApp ?
       getDatabase(fbApp) :
       null;
