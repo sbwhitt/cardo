@@ -19,8 +19,6 @@ import { TypeColorPipe } from '../pipes/type-color.pipe';
 export class DeckComponent {
   loading = false;
 
-  @Input() sample = false;
-
   cards: Card[] = [];       // all cards from db, source of truth, immutable
   pile: Card[] = [];        // working pile of all cards, mutable
 
@@ -39,21 +37,22 @@ export class DeckComponent {
 
   ngOnInit() {
     this.loading = true;
-    if (this.sample || !this.settingsService.loading) { this.init(); }
-    else {
-      this.settingsService.loaded.subscribe(() => this.init());
-    }
+    this.settingsService.loading ?
+      this.settingsService.loaded.subscribe(() => this.init()) :
+      this.init();
   }
 
   init() {
     this.actionsService.activeUndo.subscribe((res) => this.applyUndo(res));
     this.actionsService.activeRedo.subscribe((res) => this.applyRedo(res));
     this.settingsService.dealStarredChanged.subscribe(() => this.initAndDeal());
-    this.cardService.get(this.sample).then((res: Card[]) => {
+    this.cardService.get().then((res: Card[]) => {
       this.cards = res;
       this.initAndDeal();
       this.loading = false;
-    }).catch((err) => alert('Failed to get cards from database! ' + err));
+    }).catch(() => {
+      this.notificationService.push({ message: 'Couldn\'t load cards!', success: false });
+    });
     this.cardService.cardAdded.subscribe(() => {
       this.initAndDeal();
     });

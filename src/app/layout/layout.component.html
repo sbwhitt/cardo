@@ -7,13 +7,12 @@
   ></app-menu>
   @if (listOpen) {
     <app-list
-      [sample]="sample"
       [query]="query"
       [(expanded)]="listExpanded"
     ></app-list>
   }
   @else {
-    <app-deck [sample]="sample"></app-deck>
+    <app-deck></app-deck>
   }
   <app-navbar
     (listPressed)="toggleList()"

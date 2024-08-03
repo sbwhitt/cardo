@@ -28,19 +28,20 @@ export class CardsService {
     private notificationsService: NotificationsService
   ) {}
 
-  async get(sample?: boolean): Promise<Card[]> {
-    if (sample) { this.locals = null; }
+  async get(): Promise<Card[]> {
     if (this.locals && this.locals.length > 0) { return this.locals; }
-    if (sample || this.envService.isLocal()) {
+    if (this.envService.isLocal()) {
       // @ts-ignored
       this.locals = cardsLocal.cards;
-      this.notificationsService.push({ message: "Samples loaded!", success: true })
+      this.notificationsService.push({ message: "Sample cards loaded!", success: true })
       return this.locals ? this.locals : [];
     }
-    return this.dbService.getCards().then((res: any) => {
-      this.locals = Object.values(res);
-      return this.locals;
-    });
+    return this.dbService.getCards()
+      .then((res: any) => {
+        this.locals = Object.values(res);
+        this.notificationsService.push({ message: 'Cards loaded!', success: true });
+        return this.locals;
+      });
   }
 
   async update(card: Card, index: number): Promise<void> {
@@ -49,10 +50,11 @@ export class CardsService {
       this.locals[index] = card;
       return;
     }
-    return this.dbService.updateCard(card).then(() => {
-      if (!this.locals) { return; }
-      this.locals[index] = card
-    });
+    return this.dbService.updateCard(card)
+      .then(() => {
+        if (!this.locals) { return; }
+        this.locals[index] = card
+      });
   }
 
   async add(card: Card): Promise<void> {

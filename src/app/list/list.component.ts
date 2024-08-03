@@ -25,7 +25,6 @@ export class ListComponent {
   scroll = 0;
 
   @Input() expanded = false;
-  @Input() sample = false;
   @Input() query!: Observable<string>;
 
   @Output() expandedChange = new EventEmitter<boolean>();
@@ -38,14 +37,13 @@ export class ListComponent {
 
   ngOnInit() {
     this.loading = true;
-    if (this.sample || !this.settingsService.loading) { this.init(); }
-    else {
-      this.settingsService.loaded.subscribe(() => this.init());
-    }
+    this.settingsService.loading ?
+      this.settingsService.loaded.subscribe(() => this.init()) :
+      this.init();
   }
 
   init() {
-    this.cardService.get(this.sample).then((res: Card[]) => {
+    this.cardService.get().then((res: Card[]) => {
       this.cards = res;
       this.results = this.cards;
       this.loading = false;
