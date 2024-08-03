@@ -1,7 +1,9 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Observable } from 'rxjs';
+import { Router } from '@angular/router';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { LoadingComponent } from '../loading/loading.component';
+import { NavbarComponent } from '../navbar/navbar.component';
 import { CardComponent } from '../card/card.component';
 import { CardsService } from '../services/cards.service';
 import { NotificationsService } from '../services/notifications.service';
@@ -12,7 +14,14 @@ import { Card } from '../models';
 @Component({
   selector: 'app-list',
   standalone: true,
-  imports: [CommonModule, LoadingComponent, CardComponent, TypeColorPipe],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    LoadingComponent,
+    NavbarComponent,
+    CardComponent,
+    TypeColorPipe
+  ],
   templateUrl: './list.component.html',
   styleUrl: './list.component.scss'
 })
@@ -21,17 +30,14 @@ export class ListComponent {
   maxCards = 100;
   cards: Card[] = [];
   results: Card[] = [];
+  expanded = false;
   expandedCard: Card | null = null;
-  scroll = 0;
-
-  @Input() expanded = false;
-  @Input() query!: Observable<string>;
-
-  @Output() expandedChange = new EventEmitter<boolean>();
+  query = new FormControl('');
 
   constructor(
     private cardService: CardsService,
     private notificationService: NotificationsService,
+    private router: Router,
     private settingsService: SettingsService
   ) {}
 
@@ -49,16 +55,17 @@ export class ListComponent {
       this.loading = false;
     })
     .catch((err) => alert('Failed to get cards from database! ' + err));
-    this.query.subscribe((query) => this.filter(query));
+    this.query.valueChanges.subscribe((query) => this.filter(query));
   }
 
   getBaseFront(): boolean {
     return this.settingsService.getBaseFront();
   }
 
-  filter(query: string) {
-    if (!this.query) {
+  filter(query: string | null) {
+    if (!query) {
       this.results = this.cards;
+      return;
     }
     this.results = this.cards.filter((card) => {
       return card.base.toLowerCase().includes(query.toLowerCase()) ||
@@ -82,7 +89,6 @@ export class ListComponent {
 
   expandCard(card: Card) {
     this.expanded = true;
-    this.expandedChange.emit(true);
     this.expandedCard = card;
   }
 
@@ -114,9 +120,16 @@ export class ListComponent {
     });
   }
 
-  handleSwiped() {
+  backPressed() {
+    if (!this.expanded && this.expandedCard === null) {
+      this.router.navigateByUrl('');
+      return;
+    }
+    this.handleBack();
+  }
+
+  handleBack() {
     this.expanded = false;
-    this.expandedChange.emit(false);
     this.expandedCard = null;
   }
 
@@ -126,6 +139,6 @@ export class ListComponent {
 
   handleCardDeleted(card: Card) {
     this.deleteCard(card.id);
-    this.handleSwiped();
+    this.handleBack();
   }
 }
