@@ -10,10 +10,6 @@ export const routes: Routes = [
     canActivate: [AuthService]
   },
   {
-    path: 'sample',
-    component: LayoutComponent
-  },
-  {
     path: 'auth',
     component: AuthComponent
   }

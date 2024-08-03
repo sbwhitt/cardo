@@ -20,19 +20,13 @@ export class LayoutComponent {
   listExpanded = false;
   settingsMenuOpen = false;
   addCardMenuOpen = false;
-  sample = false;
   query = new Subject<string>();
 
   constructor(
-    private actionsService: ActionsService,
-    private router: Router
+    private actionsService: ActionsService
   ) {}
 
-  ngOnInit() {
-    if (this.router.url === '/sample') {
-      this.sample = true;
-    }
-  }
+  ngOnInit() {}
 
   toggleList() {
     this.listOpen = !this.listOpen;
