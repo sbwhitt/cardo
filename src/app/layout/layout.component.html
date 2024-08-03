@@ -1,27 +1,5 @@
 <div class="content">
   <app-notifications></app-notifications>
-  <app-menu
-    [settingsOpen]="settingsMenuOpen"
-    [addCardOpen]="addCardMenuOpen"
-    (closePressed)="closeMenu()"
-  ></app-menu>
-  @if (listOpen) {
-    <app-list
-      [query]="query"
-      [(expanded)]="listExpanded"
-    ></app-list>
-  }
-  @else {
-    <app-deck></app-deck>
-  }
-  <app-navbar
-    (listPressed)="toggleList()"
-    (backPressed)="handleBack()"
-    (settingsPressed)="toggleSettingsMenu()"
-    (undoPressed)="handleUndo()"
-    (redoPressed)="handleRedo()"
-    (addPressed)="toggleAddCardMenu()"
-    (searchQuery)="handleSearch($event)"
-    [search]="listOpen"
-  ></app-navbar>
+  <app-menu></app-menu>
+  <router-outlet></router-outlet>
 </div>

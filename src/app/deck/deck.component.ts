@@ -1,18 +1,21 @@
-import { Component, Input } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { LoadingComponent } from '../loading/loading.component';
+import { NavbarComponent } from '../navbar/navbar.component';
 import { CardComponent } from '../card/card.component';
 import { Action, Card } from '../models';
 import { ActionsService } from '../services/actions.service';
 import { CardsService } from '../services/cards.service';
 import { SettingsService } from '../services/settings.service';
+import { MenuService } from '../services/menu.service';
 import { NotificationsService } from '../services/notifications.service';
 import { TypeColorPipe } from '../pipes/type-color.pipe';
 
 @Component({
   selector: 'app-deck',
   standalone: true,
-  imports: [CommonModule, LoadingComponent, CardComponent, TypeColorPipe],
+  imports: [CommonModule, LoadingComponent, NavbarComponent, CardComponent, TypeColorPipe],
   templateUrl: './deck.component.html',
   styleUrl: './deck.component.scss'
 })
@@ -31,7 +34,9 @@ export class DeckComponent {
   constructor(
     private actionsService: ActionsService,
     private cardService: CardsService,
+    private menuService: MenuService,
     private notificationService: NotificationsService,
+    private router: Router,
     private settingsService: SettingsService
   ) {}
 
@@ -227,5 +232,21 @@ export class DeckComponent {
 
   handleCardDeleted(card: Card) {
     this.deleteCard(card.id);
+  }
+
+  backPressed() {
+    this.router.navigateByUrl('');
+  }
+
+  undoPressed() {
+    this.actionsService.applyUndo();
+  }
+
+  addPressed() {
+    this.menuService.openAddCard();
+  }
+
+  redoPressed() {
+    this.actionsService.applyRedo();
   }
 }

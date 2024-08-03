@@ -1,10 +1,11 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { drop } from './menu.animations';
 import { SettingsService } from '../services/settings.service';
 import { ActionSliderComponent } from './action-slider/action-slider.component';
 import { CardsService } from '../services/cards.service';
+import { MenuService } from '../services/menu.service';
 import { NotificationsService } from '../services/notifications.service';
 import { TypeColorPipe } from '../pipes/type-color.pipe';
 import { LanguagePipe } from '../pipes/language.pipe';
@@ -22,10 +23,8 @@ export class MenuComponent {
 
   typeOptions!: string[];
 
-  @Input() settingsOpen = false;
-  @Input() addCardOpen = false;
-
-  @Output() closePressed = new EventEmitter<void>();
+  settingsOpen = false;
+  addCardOpen = false;
 
   settingsForm = new FormGroup({
     deckSize: new FormControl(this.settingsService.getDeckSize(), [Validators.min(1), Validators.required])
@@ -43,11 +42,14 @@ export class MenuComponent {
 
   constructor(
     private cardsService: CardsService,
+    private menuService: MenuService,
     private notificationsService: NotificationsService,
     private settingsService: SettingsService
   ) {}
 
   ngOnInit() {
+    this.menuService.settingsOpen.subscribe((val) => this.settingsOpen = val);
+    this.menuService.addCardOpen.subscribe((val) => this.addCardOpen = val);
     this.settingsService.loaded.subscribe(() => {
       this.settingsForm.patchValue({
         deckSize: this.settingsService.getDeckSize()
@@ -65,9 +67,8 @@ export class MenuComponent {
     if (this.addCardOpen) {
       this.resetAddForm();
     }
-    this.settingsOpen = false;
-    this.addCardOpen = false;
-    this.closePressed.emit()
+    this.menuService.closeSettings();
+    this.menuService.closeAddCard();
   }
 
   addCard() {
