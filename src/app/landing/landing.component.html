@@ -1,6 +1,10 @@
-<div style="display: flex; flex-direction: column;">
-  <a routerLink="list">list</a>
-  <a routerLink="deck">deck</a>
+<div class="wrapper">
+  <a
+    *ngFor="let option of menuOptions"
+    [routerLink]="option.link"
+    [style]="{ 'background': option.color }"
+    class="menu-card"
+  >{{option.link}}</a>
 </div>
 
 <app-navbar>
