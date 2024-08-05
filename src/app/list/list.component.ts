@@ -86,10 +86,20 @@ export class ListComponent {
     this.expandedCard = card;
   }
 
+  updateResults(card: Card) {
+    this.results.forEach((c, i) => {
+      if (c.id === card.id) {
+        this.results[i] = card;
+        return;
+      }
+    })
+  }
+
   updateCard(card: Card) {
     const index = this.findCardIndex(card.id);
     if (index === null) { return; }
     this.cardService.update(card, index).then(() => {
+      this.updateResults(card);
       this.expandCard(card);
       this.notificationService.push({ message: 'Card updated!', success: true });
     })
@@ -97,7 +107,6 @@ export class ListComponent {
       this.notificationService.push({
         message: 'Card update failed! ' + err, success: false
       });
-      alert('Card update failed! ' + err);
     });
   }
 
