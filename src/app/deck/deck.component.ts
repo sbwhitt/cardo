@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { LoadingComponent } from '../loading/loading.component';
 import { NavbarComponent } from '../navbar/navbar.component';
 import { CardComponent } from '../card/card.component';
@@ -21,8 +22,8 @@ import { TypeColorPipe } from '../pipes/type-color.pipe';
 })
 export class DeckComponent {
   loading = false;
+  subs: Subscription[] = [];
 
-  cards: Card[] = [];       // all cards from db, source of truth, immutable
   pile: Card[] = [];        // working pile of all cards, mutable
 
   deck: Card[] = [];        // working deck, mutable
@@ -48,48 +49,32 @@ export class DeckComponent {
   }
 
   init() {
-    this.actionsService.activeUndo.subscribe((res) => this.applyUndo(res));
-    this.actionsService.activeRedo.subscribe((res) => this.applyRedo(res));
-    this.settingsService.dealStarredChanged.subscribe(() => this.initAndDeal());
-    this.cardService.get().then((res: Card[]) => {
-      this.cards = res;
+    this.cardService.loadCards().then(() => {
       this.initAndDeal();
       this.loading = false;
     }).catch(() => {
       this.notificationService.push({ message: 'Couldn\'t load cards!', success: false });
     });
-    this.cardService.cardAdded.subscribe(() => {
-      this.initAndDeal();
-    });
+
+    this.subs = [
+      this.actionsService.activeUndo.subscribe((res) => this.applyUndo(res)),
+      this.actionsService.activeRedo.subscribe((res) => this.applyRedo(res)),
+      this.settingsService.dealStarredChanged.subscribe(() => this.initAndDeal()),
+      this.cardService.cardAdded.subscribe((card) => {
+        this.pile.push(card);
+      })
+    ];
   }
 
   initPile() {
     this.settingsService.getDealStarred() ?
-      this.pile = structuredClone(this.getStarred()) :
-      this.pile = structuredClone(this.cards);
+      this.pile = structuredClone(this.cardService.getStarred()) :
+      this.pile = structuredClone(this.cardService.getCards());
   }
 
   initAndDeal() {
     this.initPile();
     this.dealNewDeck();
-  }
-
-  findCardIndex(id: number): number | null {
-    let start = 0;
-    let end = this.cards.length-1;
-    while (end >= start) {
-      let mid = Math.floor((end + start)/2);
-      const hit = this.cards[mid];
-      if (hit.id === id) { return mid; }
-      if (hit.id < id) { start = mid+1; }
-      else if (hit.id > id) { end = mid-1; }
-    }
-    this.notificationService.push({ message: 'Couldn\'t find card!', success: false });
-    return null;
-  }
-
-  getStarred(): Card[] {
-    return this.cards.filter((card) => card.starred);
   }
 
   applyUndo(action: Action) {
@@ -107,11 +92,12 @@ export class DeckComponent {
   }
 
   refreshWorkingCards() {
+    const cards = this.cardService.getCards();
     for (let local of [this.currentDeck, this.deck, this.missed]) {
       for (let i = 0; i < local.length; i++) {
-        const index = this.findCardIndex(local[i].id);
+        const index = this.cardService.findCardIndex(local[i].id);
         if (index === null) { return; }
-        local[i] = this.cards[index];
+        local[i] = cards[index];
       }
     }
   }
@@ -127,7 +113,7 @@ export class DeckComponent {
   }
 
   updateCard(card: Card) {
-    const index = this.findCardIndex(card.id);
+    const index = this.cardService.findCardIndex(card.id);
     if (index === null) { return; }
     this.cardService.update(card, index).then(() => {
       this.notificationService.push({ message: 'Card updated!', success: true });
@@ -141,7 +127,7 @@ export class DeckComponent {
   }
 
   deleteCard(id: number) {
-    const index = this.findCardIndex(id);
+    const index = this.cardService.findCardIndex(id);
     if (index === null) { return; }
     this.cardService.delete(id, index).then(() => {
       this.notificationService.push({ message: 'Card deleted!', success: true });
@@ -249,4 +235,9 @@ export class DeckComponent {
   redoPressed() {
     this.actionsService.applyRedo();
   }
+
+  ngOnDestroy() {
+    this.subs.forEach((sub) => sub.unsubscribe());
+  }
+
 }

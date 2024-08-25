@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { Subscription } from 'rxjs';
 import { LoadingComponent } from '../loading/loading.component';
 import { NavbarComponent } from '../navbar/navbar.component';
 import { CardComponent } from '../card/card.component';
@@ -27,8 +28,9 @@ import { Card } from '../models';
 })
 export class ListComponent {
   loading = false;
+  subs: Subscription[] = [];
+
   maxCards = 100;
-  cards: Card[] = [];
   results: Card[] = [];
   expanded = false;
   expandedCard: Card | null = null;
@@ -49,13 +51,15 @@ export class ListComponent {
   }
 
   init() {
-    this.cardService.get().then((res: Card[]) => {
-      this.cards = res;
-      this.results = this.cards;
+    this.cardService.loadCards().then((res: Card[]) => {
+      this.results = res;
       this.loading = false;
     })
     .catch((err) => alert('Failed to get cards from database! ' + err));
-    this.query.valueChanges.subscribe((query) => this.filter(query));
+
+    this.subs = [
+      this.query.valueChanges.subscribe((query) => this.filter(query))
+    ];
   }
 
   getBaseFront(): boolean {
@@ -64,27 +68,13 @@ export class ListComponent {
 
   filter(query: string | null) {
     if (!query) {
-      this.results = this.cards;
+      this.results = this.cardService.getCards();
       return;
     }
-    this.results = this.cards.filter((card) => {
+    this.results = this.cardService.getCards().filter((card) => {
       return card.base.toLowerCase().includes(query.toLowerCase()) ||
             card.goal.toLowerCase().includes(query.toLowerCase());
     });
-  }
-
-  findCardIndex(id: number): number | null {
-    let start = 0;
-    let end = this.cards.length-1;
-    while (end >= start) {
-      let mid = Math.floor((end + start)/2);
-      const hit = this.cards[mid];
-      if (hit.id === id) { return mid; }
-      if (hit.id < id) { start = mid+1; }
-      else if (hit.id > id) { end = mid-1; }
-    }
-    this.notificationService.push({ message: 'Couldn\'t find card!', success: false });
-    return null;
   }
 
   expandCard(card: Card) {
@@ -102,7 +92,7 @@ export class ListComponent {
   }
 
   updateCard(card: Card) {
-    const index = this.findCardIndex(card.id);
+    const index = this.cardService.findCardIndex(card.id);
     if (index === null) { return; }
     this.cardService.update(card, index).then(() => {
       this.updateResults(card);
@@ -117,7 +107,7 @@ export class ListComponent {
   }
 
   deleteCard(id: number) {
-    const index = this.findCardIndex(id);
+    const index = this.cardService.findCardIndex(id);
     if (index === null) { return; }
     this.cardService.delete(id, index).then(() => {
       this.notificationService.push({ message: 'Card deleted!', success: true });
@@ -150,4 +140,9 @@ export class ListComponent {
     this.deleteCard(card.id);
     this.handleBack();
   }
+
+  ngOnDestroy() {
+    this.subs.forEach((sub) => sub.unsubscribe()); 
+  }
+
 }
