@@ -114,9 +114,16 @@ export class DbService {
     });
   }
 
-  async updateSet(update: Set): Promise<void> {
+  async updateSet(updatedSet: Set): Promise<void> {
     const db = this.getDb();
     if (!db) { return; }
-    return set(ref(db, this.getSetsLocation() + '/' + update.id), update);
+    return set(ref(db, this.getSetsLocation() + '/' + updatedSet.id), updatedSet);
   }
+
+  async addSet(newSet: Set): Promise<void> {
+    const db = this.getDb();
+    if (!db) { return; }
+    return set(ref(db, this.getSetsLocation() + '/' + newSet.id), newSet);
+  }
+
 }

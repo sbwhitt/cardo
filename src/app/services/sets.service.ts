@@ -22,7 +22,7 @@ export class SetsService {
   private parse(raw: any[]): Set[] {
     //@ts-ignore
     return Object.values(raw).map((s) => {
-      s.cards = Object.values(s.cards);
+      s.cards = s.cards ? Object.values(s.cards) : [];
       return s;
     });
   }
@@ -63,7 +63,26 @@ export class SetsService {
     return cards.sort((a, b) => a.id - b.id);
   }
 
-  async createSet(set: Set): Promise<void> {}
+  async add(set: Set): Promise<void> {
+    this.sets = await this.loadSets();
+    if (!this.sets) {
+      this.notificationService.push({
+        message: 'Failed to add set!',
+        success: false
+      });
+      return;
+    }
+    set.id = this.sets.length === 0 ?
+      0 : set.id = this.sets[this.sets.length-1].id+1;
+    // if (this.envService.isLocal()) {
+    //   this.sets.push(set);
+    //   return;
+    // }
+    return this.dbService.addSet(set)
+      .then(() => {
+        this.sets?.push(set);
+      });
+  }
 
   async updateSet(set: Set): Promise<void> {
     return this.dbService.updateSet(set);

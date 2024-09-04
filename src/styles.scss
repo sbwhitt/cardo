@@ -103,3 +103,10 @@ button {
     padding: 1rem;
     gap: 0.5rem;
 }
+
+.col-center {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}

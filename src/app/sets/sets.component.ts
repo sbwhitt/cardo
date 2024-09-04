@@ -38,7 +38,7 @@ export class SetsComponent {
   }
 
   addPressed() {
-    this.menuService.openAddCard();
+    this.menuService.openAddSet();
   }
 
 }

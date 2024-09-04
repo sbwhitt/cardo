@@ -63,7 +63,11 @@ export class ListComponent {
 
     this.subs = [
       this.route.paramMap.subscribe((map) => this.loadCards(map)),
-      this.query.valueChanges.subscribe((query) => this.filter(query))
+      this.query.valueChanges.subscribe((query) => {
+        this.set ?
+          this.filterSet(query) :
+          this.filterAll(query)
+      })
     ];
   }
 
@@ -80,7 +84,20 @@ export class ListComponent {
     return this.settingsService.getBaseFront();
   }
 
-  filter(query: string | null) {
+  async filterSet(query: string | null) {
+    if (this.set === null) { return; }
+    if (!query) {
+      this.results = await this.setsService.getCards(this.set.id);
+      return;
+    }
+    const cards = await this.setsService.getCards(this.set.id);
+    this.results = cards.filter((card) => {
+      return card.base.toLowerCase().includes(query.toLowerCase()) ||
+            card.goal.toLowerCase().includes(query.toLowerCase());
+    });
+  }
+
+  filterAll(query: string | null) {
     if (!query) {
       this.results = this.cardService.getCards();
       return;

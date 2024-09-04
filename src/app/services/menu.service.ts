@@ -7,6 +7,7 @@ import { Subject } from 'rxjs';
 export class MenuService {
   settingsOpen = new Subject<boolean>();
   addCardOpen = new Subject<boolean>();
+  addSetOpen = new Subject<boolean>();
 
   constructor() { }
 
@@ -25,4 +26,13 @@ export class MenuService {
   closeAddCard() {
     this.addCardOpen.next(false);
   }
+
+  openAddSet() {
+    this.addSetOpen.next(true);
+  }
+
+  closeAddSet() {
+    this.addSetOpen.next(false);
+  }
+
 }
