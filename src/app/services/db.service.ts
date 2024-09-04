@@ -3,7 +3,7 @@ import { Database, get, getDatabase, ref, remove, set } from 'firebase/database'
 import { Router } from '@angular/router';
 import { AuthService } from './auth.service';
 import { EnvironmentService } from './environment.service';
-import { Card, Settings } from '../models';
+import { Card, Set, Settings } from '../models';
 
 @Injectable({
   providedIn: 'root'
@@ -18,6 +18,10 @@ export class DbService {
 
   private getCardsLocation(): string {
     return this.authService.user + '/cards';
+  }
+
+  private getSetsLocation(): string {
+    return this.authService.user + '/sets';
   }
 
   private getDb(): Database | null {
@@ -98,5 +102,21 @@ export class DbService {
     const db = this.getDb();
     if (!db) { return; }
     return remove(ref(db, this.getCardsLocation() + '/' + id));
+  }
+
+  async getSets(): Promise<object | null> {
+    const db = this.getDb();
+    if (!db) { return null; }
+    const dbRef = ref(db, this.getSetsLocation());
+    return await get(dbRef).then((snap) => {
+      if (snap.exists()) { return snap.toJSON(); }
+      return null;
+    });
+  }
+
+  async updateSet(update: Set): Promise<void> {
+    const db = this.getDb();
+    if (!db) { return; }
+    return set(ref(db, this.getSetsLocation() + '/' + update.id), update);
   }
 }

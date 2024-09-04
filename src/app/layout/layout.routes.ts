@@ -4,6 +4,7 @@ import { LayoutComponent } from './layout.component';
 import { LandingComponent } from '../landing/landing.component';
 import { DeckComponent } from '../deck/deck.component';
 import { ListComponent } from '../list/list.component';
+import { SetsComponent } from '../sets/sets.component';
 
 export const routes: Routes = [
   {
@@ -24,6 +25,11 @@ export const routes: Routes = [
       {
         path: 'list',
         component: ListComponent,
+        canActivate: [AuthService]
+      },
+      {
+        path: 'sets',
+        component: SetsComponent,
         canActivate: [AuthService]
       }
     ]
