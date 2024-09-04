@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
+import { ParamMap } from '@angular/router';
+import { CardsService } from './cards.service';
 import { DbService } from './db.service';
 import { EnvironmentService } from './environment.service';
 import { NotificationsService } from './notifications.service';
-import { Set } from '../models';
+import { Card, Set } from '../models';
 
 @Injectable({
   providedIn: 'root'
@@ -11,6 +13,7 @@ export class SetsService {
   sets: Set[] | null = null;
 
   constructor(
+    private cardsService: CardsService,
     private dbService: DbService,
     private envService: EnvironmentService,
     private notificationService: NotificationsService
@@ -25,6 +28,7 @@ export class SetsService {
   }
 
   async loadSets(): Promise<Set[]> {
+    if (this.sets) { return this.sets; }
     return this.dbService.getSets().then((sets) => {
       //@ts-ignore
       this.sets = sets ? this.parse(sets) : [];
@@ -32,13 +36,31 @@ export class SetsService {
     });
   }
 
+  async loadSetFromParams(map: ParamMap): Promise<Set | null> {
+    const setId = map.get('setId');
+    if (setId === null) { return null; }
+    return this.getSet(Number.parseInt(setId));
+  }
+
   getSets(): Set[] {
     return this.sets ? this.sets : [];
   }
 
-  getSet(id: number): Set | null {
-    const set = this.sets?.find((s) => s.id === id);
+  async getSet(setId: number): Promise<Set | null> {
+    if (!this.sets) { await this.loadSets(); }
+    const set = this.sets?.find((s) => s.id === setId);
     return set ? set : null;
+  }
+
+  async getCards(setId: number): Promise<Card[]> {
+    const set = await this.getSet(setId);
+    if (!set) { return []; }
+    const cards: Card[] = [];
+    set.cards.forEach((id) => {
+      const card = this.cardsService.getCard(id);
+      if (card !== null) { cards.push(card); }
+    });
+    return cards.sort((a, b) => a.id - b.id);
   }
 
   async createSet(set: Set): Promise<void> {}

@@ -32,4 +32,5 @@ export interface Set {
   id: number;
   name: string;
   cards: number[];
+  color: string;
 }

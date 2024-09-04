@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
-import { Card } from '../models';
+import { Subject } from 'rxjs';
+import * as cardsLocal from './sample.json';
 import { DbService } from './db.service';
 import { EnvironmentService } from './environment.service';
-import * as cardsLocal from './sample.json';
-import { Subject } from 'rxjs';
 import { NotificationsService } from './notifications.service';
+import { Card, Set } from '../models';
 
 @Injectable({
   providedIn: 'root'
@@ -27,7 +27,7 @@ export class CardsService {
     private notificationService: NotificationsService
   ) {}
 
-  async loadCards(): Promise<Card[]> {
+  async loadCards(set?: Set): Promise<Card[]> {
     if (this.cards && this.cards.length > 0) { return this.cards; }
     if (!this.envService.isLocal()) {
       // @ts-ignored
@@ -41,6 +41,12 @@ export class CardsService {
         this.notificationService.push({ message: 'Cards loaded!', success: true });
         return this.cards;
       });
+  }
+
+  getCard(cardId: number): Card | null {
+    const index = this.findCardIndex(cardId);
+    if (index === null || !this.cards) { return null; }
+    return this.cards[index];
   }
 
   getCards(): Card[] {

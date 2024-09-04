@@ -1,13 +1,14 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { LoadingComponent } from '../loading/loading.component';
 import { NavbarComponent } from '../navbar/navbar.component';
 import { CardComponent } from '../card/card.component';
-import { Action, Card } from '../models';
+import { Action, Card, Set } from '../models';
 import { ActionsService } from '../services/actions.service';
 import { CardsService } from '../services/cards.service';
+import { SetsService } from '../services/sets.service';
 import { SettingsService } from '../services/settings.service';
 import { MenuService } from '../services/menu.service';
 import { NotificationsService } from '../services/notifications.service';
@@ -24,6 +25,7 @@ export class DeckComponent {
   loading = false;
   subs: Subscription[] = [];
 
+  set: Set | null = null;
   pile: Card[] = [];        // working pile of all cards, mutable
 
   deck: Card[] = [];        // working deck, mutable
@@ -34,10 +36,12 @@ export class DeckComponent {
 
   constructor(
     private actionsService: ActionsService,
+    private route: ActivatedRoute,
     private cardService: CardsService,
     private menuService: MenuService,
     private notificationService: NotificationsService,
     private router: Router,
+    private setsService: SetsService,
     private settingsService: SettingsService
   ) {}
 
@@ -48,15 +52,9 @@ export class DeckComponent {
       this.init();
   }
 
-  init() {
-    this.cardService.loadCards().then(() => {
-      this.initAndDeal();
-      this.loading = false;
-    }).catch(() => {
-      this.notificationService.push({ message: 'Couldn\'t load cards!', success: false });
-    });
-
+  async init() {
     this.subs = [
+      this.route.paramMap.subscribe((map) => this.loadCards(map)),
       this.actionsService.activeUndo.subscribe((res) => this.applyUndo(res)),
       this.actionsService.activeRedo.subscribe((res) => this.applyRedo(res)),
       this.settingsService.dealStarredChanged.subscribe(() => this.initAndDeal()),
@@ -66,15 +64,29 @@ export class DeckComponent {
     ];
   }
 
-  initPile() {
+  async loadCards(paramMap: ParamMap): Promise<void> {
+    this.set = await this.setsService.loadSetFromParams(paramMap);
+    this.cardService.loadCards().then(() => {
+      this.initAndDeal();
+      this.loading = false;
+    }).catch(() => {
+      this.notificationService.push({ message: 'Couldn\'t load cards!', success: false });
+    });
+  }
+
+  async initPile() {
+    if (this.set) {
+      this.pile = await this.setsService.getCards(this.set.id);
+      return;
+    }
     this.settingsService.getDealStarred() ?
       this.pile = structuredClone(this.cardService.getStarred()) :
       this.pile = structuredClone(this.cardService.getCards());
   }
 
   initAndDeal() {
-    this.initPile();
-    this.dealNewDeck();
+    this.initPile()
+      .then(() => this.dealNewDeck());
   }
 
   applyUndo(action: Action) {

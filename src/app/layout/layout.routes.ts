@@ -23,8 +23,20 @@ export const routes: Routes = [
         canActivate: [AuthService]
       },
       {
+        path: 'deck/set/:setId',
+        component: DeckComponent,
+        pathMatch: 'full',
+        canActivate: [AuthService]
+      },
+      {
         path: 'list',
         component: ListComponent,
+        canActivate: [AuthService]
+      },
+      {
+        path: 'list/set/:setId',
+        component: ListComponent,
+        pathMatch: 'full',
         canActivate: [AuthService]
       },
       {

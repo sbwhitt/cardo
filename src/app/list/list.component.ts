@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { LoadingComponent } from '../loading/loading.component';
@@ -10,7 +10,8 @@ import { CardsService } from '../services/cards.service';
 import { NotificationsService } from '../services/notifications.service';
 import { SettingsService } from '../services/settings.service';
 import { TypeColorPipe } from '../pipes/type-color.pipe';
-import { Card } from '../models';
+import { Card, Set } from '../models';
+import { SetsService } from '../services/sets.service';
 
 @Component({
   selector: 'app-list',
@@ -31,15 +32,18 @@ export class ListComponent {
   subs: Subscription[] = [];
 
   maxCards = 100;
+  set: Set | null = null;
   results: Card[] = [];
   expanded = false;
   expandedCard: Card | null = null;
   query = new FormControl('');
 
   constructor(
+    private route: ActivatedRoute,
     private cardService: CardsService,
     private notificationService: NotificationsService,
     private router: Router,
+    private setsService: SetsService,
     private settingsService: SettingsService
   ) {}
 
@@ -58,8 +62,18 @@ export class ListComponent {
     .catch((err) => alert('Failed to get cards from database! ' + err));
 
     this.subs = [
+      this.route.paramMap.subscribe((map) => this.loadCards(map)),
       this.query.valueChanges.subscribe((query) => this.filter(query))
     ];
+  }
+
+  async loadCards(paramMap: ParamMap): Promise<void> {
+    this.set = await this.setsService.loadSetFromParams(paramMap);
+    return this.cardService.loadCards().then(async (res: Card[]) => {
+      this.results = this.set ? await this.setsService.getCards(this.set.id) : res;
+      this.loading = false;
+    })
+    .catch((err) => alert('Failed to get cards from database! ' + err));
   }
 
   getBaseFront(): boolean {
