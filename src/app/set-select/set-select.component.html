@@ -1,0 +1,16 @@
+<app-modal *ngIf="open" class="container">
+  <h3>Add to set(s)</h3>
+  <div class="list">
+    <div *ngFor="let s of sets" class="set-row">
+      <div
+        class="list-card"
+        [style]="{ backgroundColor: s.color }"
+      >
+        <div class="row-between">
+          {{s.name}}
+        </div>
+      </div>
+    </div>
+  </div>
+  <button (click)="open = false">close</button>
+</app-modal>

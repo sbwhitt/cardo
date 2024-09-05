@@ -110,3 +110,9 @@ button {
     flex-direction: column;
     justify-content: center;
 }
+
+.row-between {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}

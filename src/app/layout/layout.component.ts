@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
-import { Router, RouterOutlet } from '@angular/router';
+import { RouterOutlet } from '@angular/router';
 import { Subject } from 'rxjs';
 import { NotificationsComponent } from '../notifications/notifications.component';
+import { SetSelectComponent } from '../set-select/set-select.component';
 import { MenuComponent } from '../menu/menu.component';
 import { NavbarComponent } from '../navbar/navbar.component';
 import { DeckComponent } from '../deck/deck.component';
@@ -14,6 +15,7 @@ import { ActionsService } from '../services/actions.service';
   imports: [
     RouterOutlet,
     NotificationsComponent,
+    SetSelectComponent,
     MenuComponent,
     NavbarComponent,
     DeckComponent,

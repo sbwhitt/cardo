@@ -10,8 +10,9 @@ import { CardsService } from '../services/cards.service';
 import { NotificationsService } from '../services/notifications.service';
 import { SettingsService } from '../services/settings.service';
 import { TypeColorPipe } from '../pipes/type-color.pipe';
-import { Card, Set } from '../models';
 import { SetsService } from '../services/sets.service';
+import { SetSelectService } from '../services/set-select.service';
+import { Card, Set } from '../models';
 
 @Component({
   selector: 'app-list',
@@ -44,7 +45,8 @@ export class ListComponent {
     private notificationService: NotificationsService,
     private router: Router,
     private setsService: SetsService,
-    private settingsService: SettingsService
+    private settingsService: SettingsService,
+    private setSelectService: SetSelectService
   ) {}
 
   ngOnInit() {
@@ -106,6 +108,11 @@ export class ListComponent {
       return card.base.toLowerCase().includes(query.toLowerCase()) ||
             card.goal.toLowerCase().includes(query.toLowerCase());
     });
+  }
+
+  openSetSelect(event: Event, card: Card) {
+    event.stopPropagation();
+    this.setSelectService.open(card.id);
   }
 
   expandCard(card: Card) {
