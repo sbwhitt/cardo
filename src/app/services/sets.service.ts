@@ -12,6 +12,14 @@ import { Card, Set } from '../models';
 export class SetsService {
   sets: Set[] | null = null;
 
+  colorOptions: string[] = [
+    'plum',
+    'lightgreen',
+    'palegoldenrod',
+    'lightpink',
+    'lightblue'
+  ];
+
   constructor(
     private cardsService: CardsService,
     private dbService: DbService,

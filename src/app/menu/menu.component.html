@@ -57,10 +57,10 @@
         placeholder="Name" />
       <div class="color-container">
         <app-color-choice
-          *ngFor="let c of colorOptions"
+          *ngFor="let c of getColorOptions()"
           [value]="c"
           [selected]="addSetForm.get('color')?.value === c"
-          (click)="selectColor(c)"
+          (click)="this.addSetForm.patchValue({ color: c })"
         ></app-color-choice>
       </div>
     </form>

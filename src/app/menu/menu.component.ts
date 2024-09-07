@@ -34,13 +34,6 @@ export class MenuComponent {
   dropState = 'inactive';
 
   typeOptions!: string[];
-  colorOptions: string[] = [
-    'plum',
-    'lightgreen',
-    'palegoldenrod',
-    'lightpink',
-    'lightblue'
-  ];
 
   settingsOpen = false;
   addCardOpen = false;
@@ -140,8 +133,8 @@ export class MenuComponent {
     });
   }
 
-  selectColor(choice: string) {
-    this.addSetForm.patchValue({ color: choice });
+  getColorOptions(): string[] {
+    return this.setsService.colorOptions;
   }
 
   addSet() {
