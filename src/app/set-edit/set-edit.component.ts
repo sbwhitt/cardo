@@ -19,6 +19,8 @@ import { Set } from '../models';
   styleUrl: './set-edit.component.scss'
 })
 export class SetEditComponent {
+  confirmOpen = false;
+
   setForm = new FormGroup({
     name: new FormControl<string | null>(null, Validators.required),
     color: new FormControl<string | null>(null, Validators.required)
@@ -49,7 +51,13 @@ export class SetEditComponent {
       name: formValue.name ? formValue.name : '',
       color: formValue.color ? formValue.color : 'lightgray'
     })
-      .then(() => this.close());
+    .then(() => this.close());
+  }
+
+  delete() {
+    if (!this.set) { return; }
+    this.setsService.deleteSet(this.set.id)
+    .then(() => this.close());
   }
 
   close() {

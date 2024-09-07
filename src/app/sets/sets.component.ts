@@ -42,7 +42,7 @@ export class SetsComponent {
   }
 
   navigate(set: Set) {
-    this.router.navigateByUrl('/list/set' + set.id);
+    this.router.navigateByUrl('/list/set/' + set.id);
   }
 
   edit(event: Event, set: Set) {

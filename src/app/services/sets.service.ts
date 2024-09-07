@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ParamMap } from '@angular/router';
+import { Subject } from 'rxjs';
 import { CardsService } from './cards.service';
 import { DbService } from './db.service';
 import { EnvironmentService } from './environment.service';
@@ -96,12 +97,30 @@ export class SetsService {
     return this.dbService.updateSet(set)
       .then(() => {
         this.notificationService.push({ message: 'Set updated!', success: true });
+        const index = this.sets?.findIndex((s) => s.id === set.id);
+        if (index && this.sets) { this.sets[index] = set; }
       })
       .catch(() => {
         this.notificationService.push({ message: 'Failed to update set!', success: false });
       });
   }
 
-  async deleteSet(id: number): Promise<void> {}
+  async deleteSet(id: number): Promise<void> {
+    return this.dbService.deleteSet(id)
+      .then(() => {
+        this.notificationService.push({
+          message: 'Set deleted!',
+          success: true
+        });
+        const delIndex = this.sets?.findIndex((s) => s.id === id);
+        if (delIndex) { this.sets?.splice(delIndex, 1); }
+      })
+      .catch((err) => {
+        this.notificationService.push({
+          message: 'Failed to delete set!',
+          success: false
+        });
+      });
+  }
 
 }

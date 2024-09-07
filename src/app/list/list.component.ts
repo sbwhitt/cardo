@@ -56,8 +56,8 @@ export class ListComponent {
       this.init();
   }
 
-  init() {
-    this.cardService.loadCards().then((res: Card[]) => {
+  async init() {
+    await this.cardService.loadCards().then((res: Card[]) => {
       this.results = res;
       this.loading = false;
     })
@@ -75,11 +75,8 @@ export class ListComponent {
 
   async loadCards(paramMap: ParamMap): Promise<void> {
     this.set = await this.setsService.loadSetFromParams(paramMap);
-    return this.cardService.loadCards().then(async (res: Card[]) => {
-      this.results = this.set ? await this.setsService.getCards(this.set.id) : res;
-      this.loading = false;
-    })
-    .catch((err) => alert('Failed to get cards from database! ' + err));
+    if (this.set) { this.results = await this.setsService.getCards(this.set.id); }
+    this.loading = false;
   }
 
   getBaseFront(): boolean {

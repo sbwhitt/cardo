@@ -114,16 +114,22 @@ export class DbService {
     });
   }
 
+  async addSet(newSet: Set): Promise<void> {
+    const db = this.getDb();
+    if (!db) { return; }
+    return set(ref(db, this.getSetsLocation() + '/' + newSet.id), newSet);
+  }
+
   async updateSet(updatedSet: Set): Promise<void> {
     const db = this.getDb();
     if (!db) { return; }
     return set(ref(db, this.getSetsLocation() + '/' + updatedSet.id), updatedSet);
   }
 
-  async addSet(newSet: Set): Promise<void> {
+  async deleteSet(setId: number): Promise<void> {
     const db = this.getDb();
     if (!db) { return; }
-    return set(ref(db, this.getSetsLocation() + '/' + newSet.id), newSet);
+    return remove(ref(db, this.getSetsLocation() + '/' + setId));
   }
 
 }
