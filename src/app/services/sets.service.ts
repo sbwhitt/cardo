@@ -85,7 +85,13 @@ export class SetsService {
   }
 
   async updateSet(set: Set): Promise<void> {
-    return this.dbService.updateSet(set);
+    return this.dbService.updateSet(set)
+      .then(() => {
+        this.notificationService.push({ message: 'Set updated!', success: true });
+      })
+      .catch(() => {
+        this.notificationService.push({ message: 'Failed to update set!', success: false });
+      });
   }
 
   async deleteSet(id: number): Promise<void> {}

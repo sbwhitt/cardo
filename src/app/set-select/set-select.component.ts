@@ -17,6 +17,7 @@ export class SetSelectComponent {
   subs: Subscription[] = [];
 
   open = false;
+  selection!: number;
   sets: Set[] = [];
 
   constructor(
@@ -33,10 +34,26 @@ export class SetSelectComponent {
 
   handleOpen(cardId: number) {
     this.open = true;
+    this.selection = cardId;
     this.setsService.loadSets()
       .then((sets) => {
         this.sets = sets;
       });
+  }
+
+  addSelection(toSet: Set) {
+    toSet.cards.push(this.selection);
+    this.setsService.updateSet(toSet);
+  }
+
+  removeSelection(fromSet: Set) {
+    fromSet.cards.splice(
+      fromSet.cards.findIndex((c) => c === this.selection), 1);
+    this.setsService.updateSet(fromSet);
+  }
+
+  close() {
+    this.open = false;
   }
 
   ngOnDestroy() {
