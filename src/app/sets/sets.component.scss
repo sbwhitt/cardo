@@ -1,0 +1,24 @@
+@import '../../styles.scss';
+
+:host {
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+    width: 100%;
+    height: 100%;
+}
+
+a {
+    text-decoration: none;
+    color: black;
+}
+
+.set-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.set-title {
+    word-break: break-all;
+}

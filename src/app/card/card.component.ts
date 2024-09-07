@@ -4,6 +4,7 @@ import { AnimationEvent } from "@angular/animations";
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ModalComponent } from "../modal/modal.component";
 import { CardsService } from '../services/cards.service';
+import { SetSelectService } from '../services/set-select.service';
 import { flip, swipeRight, swipeLeft, fadeIn } from './card.animations';
 import { Card } from '../models';
 import { TypeColorPipe } from '../pipes/type-color.pipe';
@@ -53,7 +54,8 @@ export class CardComponent {
   typeOptions!: string[];
 
   constructor(
-    private cardService: CardsService
+    private cardService: CardsService,
+    private setSelectService: SetSelectService
   ) {}
 
   ngOnInit() {
@@ -162,12 +164,9 @@ export class CardComponent {
     this.showInfo = false;
   }
 
-  starTapped(event: Event) {
+  starTapped(event: Event, card: Card) {
     event.stopPropagation();
-    this.onUpdated.emit({
-      ...this.card,
-      starred: !this.card.starred
-    });
+    this.setSelectService.open(card.id);
   }
 
   infoTapped(event: Event) {

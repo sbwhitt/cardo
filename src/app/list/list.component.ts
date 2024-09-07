@@ -1,38 +1,52 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Observable } from 'rxjs';
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { Subscription } from 'rxjs';
 import { LoadingComponent } from '../loading/loading.component';
+import { NavbarComponent } from '../navbar/navbar.component';
 import { CardComponent } from '../card/card.component';
 import { CardsService } from '../services/cards.service';
 import { NotificationsService } from '../services/notifications.service';
 import { SettingsService } from '../services/settings.service';
 import { TypeColorPipe } from '../pipes/type-color.pipe';
-import { Card } from '../models';
+import { SetsService } from '../services/sets.service';
+import { SetSelectService } from '../services/set-select.service';
+import { Card, Set } from '../models';
 
 @Component({
   selector: 'app-list',
   standalone: true,
-  imports: [CommonModule, LoadingComponent, CardComponent, TypeColorPipe],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    LoadingComponent,
+    NavbarComponent,
+    CardComponent,
+    TypeColorPipe
+  ],
   templateUrl: './list.component.html',
   styleUrl: './list.component.scss'
 })
 export class ListComponent {
   loading = false;
+  subs: Subscription[] = [];
+
   maxCards = 100;
-  cards: Card[] = [];
+  set: Set | null = null;
   results: Card[] = [];
+  expanded = false;
   expandedCard: Card | null = null;
-  scroll = 0;
-
-  @Input() expanded = false;
-  @Input() query!: Observable<string>;
-
-  @Output() expandedChange = new EventEmitter<boolean>();
+  query = new FormControl('');
 
   constructor(
+    private route: ActivatedRoute,
     private cardService: CardsService,
     private notificationService: NotificationsService,
-    private settingsService: SettingsService
+    private router: Router,
+    private setsService: SetsService,
+    private settingsService: SettingsService,
+    private setSelectService: SetSelectService
   ) {}
 
   ngOnInit() {
@@ -42,47 +56,73 @@ export class ListComponent {
       this.init();
   }
 
-  init() {
-    this.cardService.get().then((res: Card[]) => {
-      this.cards = res;
-      this.results = this.cards;
+  async init() {
+    await this.cardService.loadCards().then((res: Card[]) => {
+      this.results = res;
       this.loading = false;
     })
     .catch((err) => alert('Failed to get cards from database! ' + err));
-    this.query.subscribe((query) => this.filter(query));
+
+    this.subs = [
+      this.route.paramMap.subscribe((map) => this.loadSet(map)),
+      this.setsService.updated.subscribe(() => {
+        this.refreshSet()
+      }),
+      this.query.valueChanges.subscribe((query) => {
+        this.set ?
+          this.filterSet(query) :
+          this.filterAll(query)
+      })
+    ];
+  }
+
+  async loadSet(paramMap: ParamMap): Promise<void> {
+    this.set = await this.setsService.loadSetFromParams(paramMap);
+    if (this.set) { this.results = await this.setsService.getCards(this.set.id); }
+    this.loading = false;
+  }
+
+  async refreshSet(): Promise<void> {
+    if (!this.set) { return; }
+    if (this.set) { this.results = await this.setsService.getCards(this.set.id); }
+    this.filterSet(this.query.value);
   }
 
   getBaseFront(): boolean {
     return this.settingsService.getBaseFront();
   }
 
-  filter(query: string) {
-    if (!this.query) {
-      this.results = this.cards;
+  async filterSet(query: string | null) {
+    if (this.set === null) { return; }
+    if (!query) {
+      this.results = await this.setsService.getCards(this.set.id);
+      return;
     }
-    this.results = this.cards.filter((card) => {
+    const cards = await this.setsService.getCards(this.set.id);
+    this.results = cards.filter((card) => {
       return card.base.toLowerCase().includes(query.toLowerCase()) ||
             card.goal.toLowerCase().includes(query.toLowerCase());
     });
   }
 
-  findCardIndex(id: number): number | null {
-    let start = 0;
-    let end = this.cards.length-1;
-    while (end >= start) {
-      let mid = Math.floor((end + start)/2);
-      const hit = this.cards[mid];
-      if (hit.id === id) { return mid; }
-      if (hit.id < id) { start = mid+1; }
-      else if (hit.id > id) { end = mid-1; }
+  filterAll(query: string | null) {
+    if (!query) {
+      this.results = this.cardService.getCards();
+      return;
     }
-    this.notificationService.push({ message: 'Couldn\'t find card!', success: false });
-    return null;
+    this.results = this.cardService.getCards().filter((card) => {
+      return card.base.toLowerCase().includes(query.toLowerCase()) ||
+            card.goal.toLowerCase().includes(query.toLowerCase());
+    });
+  }
+
+  openSetSelect(event: Event, card: Card) {
+    event.stopPropagation();
+    this.setSelectService.open(card.id);
   }
 
   expandCard(card: Card) {
     this.expanded = true;
-    this.expandedChange.emit(true);
     this.expandedCard = card;
   }
 
@@ -96,7 +136,7 @@ export class ListComponent {
   }
 
   updateCard(card: Card) {
-    const index = this.findCardIndex(card.id);
+    const index = this.cardService.findCardIndex(card.id);
     if (index === null) { return; }
     this.cardService.update(card, index).then(() => {
       this.updateResults(card);
@@ -111,7 +151,7 @@ export class ListComponent {
   }
 
   deleteCard(id: number) {
-    const index = this.findCardIndex(id);
+    const index = this.cardService.findCardIndex(id);
     if (index === null) { return; }
     this.cardService.delete(id, index).then(() => {
       this.notificationService.push({ message: 'Card deleted!', success: true });
@@ -123,9 +163,16 @@ export class ListComponent {
     });
   }
 
-  handleSwiped() {
+  backPressed() {
+    if (!this.expanded && this.expandedCard === null) {
+      this.router.navigateByUrl('');
+      return;
+    }
+    this.handleBack();
+  }
+
+  handleBack() {
     this.expanded = false;
-    this.expandedChange.emit(false);
     this.expandedCard = null;
   }
 
@@ -135,6 +182,11 @@ export class ListComponent {
 
   handleCardDeleted(card: Card) {
     this.deleteCard(card.id);
-    this.handleSwiped();
+    this.handleBack();
   }
+
+  ngOnDestroy() {
+    this.subs.forEach((sub) => sub.unsubscribe()); 
+  }
+
 }
