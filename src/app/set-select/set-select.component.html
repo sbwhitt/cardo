@@ -1,4 +1,4 @@
-<app-modal *ngIf="open" class="container">
+<app-modal *ngIf="open" class="container" (close)="close()">
   <h3>Add to set(s)</h3>
   <div class="select-list">
     <div *ngFor="let s of sets" class="set-row">

@@ -1,4 +1,4 @@
-<app-modal *ngIf="set" class="container">
+<app-modal *ngIf="set" class="container" (close)="close()">
   <h3>Edit {{set.name}}</h3>
   <form class="add-form" [formGroup]="setForm">
     <input
