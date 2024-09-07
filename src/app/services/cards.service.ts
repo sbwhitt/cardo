@@ -29,7 +29,7 @@ export class CardsService {
 
   async loadCards(set?: Set): Promise<Card[]> {
     if (this.cards && this.cards.length > 0) { return this.cards; }
-    if (!this.envService.isLocal()) {
+    if (this.envService.isLocal()) {
       // @ts-ignored
       this.cards = cardsLocal.cards;
       this.notificationService.push({ message: "Sample cards loaded!", success: true })
