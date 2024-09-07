@@ -64,7 +64,10 @@ export class ListComponent {
     .catch((err) => alert('Failed to get cards from database! ' + err));
 
     this.subs = [
-      this.route.paramMap.subscribe((map) => this.loadCards(map)),
+      this.route.paramMap.subscribe((map) => this.loadSet(map)),
+      this.setsService.updated.subscribe(() => {
+        this.refreshSet()
+      }),
       this.query.valueChanges.subscribe((query) => {
         this.set ?
           this.filterSet(query) :
@@ -73,10 +76,16 @@ export class ListComponent {
     ];
   }
 
-  async loadCards(paramMap: ParamMap): Promise<void> {
+  async loadSet(paramMap: ParamMap): Promise<void> {
     this.set = await this.setsService.loadSetFromParams(paramMap);
     if (this.set) { this.results = await this.setsService.getCards(this.set.id); }
     this.loading = false;
+  }
+
+  async refreshSet(): Promise<void> {
+    if (!this.set) { return; }
+    if (this.set) { this.results = await this.setsService.getCards(this.set.id); }
+    this.filterSet(this.query.value);
   }
 
   getBaseFront(): boolean {

@@ -11,6 +11,7 @@ import { Card, Set } from '../models';
   providedIn: 'root'
 })
 export class SetsService {
+  updated = new Subject<void>();
   sets: Set[] | null = null;
 
   colorOptions: string[] = [
@@ -99,6 +100,7 @@ export class SetsService {
         this.notificationService.push({ message: 'Set updated!', success: true });
         const index = this.sets?.findIndex((s) => s.id === set.id);
         if (index && this.sets) { this.sets[index] = set; }
+        this.updated.next();
       })
       .catch(() => {
         this.notificationService.push({ message: 'Failed to update set!', success: false });
