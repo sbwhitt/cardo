@@ -52,6 +52,12 @@ export class SetSelectComponent {
     this.setsService.updateSet(fromSet);
   }
 
+  toggleSelection(set: Set) {
+    set.cards.includes(this.selection) ?
+      this.removeSelection(set) :
+      this.addSelection(set);
+  }
+
   close() {
     this.open = false;
   }

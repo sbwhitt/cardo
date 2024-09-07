@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
+import { Subject } from 'rxjs';
 import { LoadingComponent } from '../loading/loading.component';
 import { NavbarComponent } from '../navbar/navbar.component';
 import { MenuService } from '../services/menu.service';
@@ -25,7 +26,7 @@ export class SetsComponent {
   loading = false;
 
   sets: Set[] = [];
-  editing: Set | null = null;
+  editing = new Subject<Set>();
 
   constructor(
     private menuService: MenuService,
@@ -41,13 +42,17 @@ export class SetsComponent {
     });
   }
 
-  navigate(set: Set) {
+  navigateToList(set: Set) {
     this.router.navigateByUrl('/list/set/' + set.id);
+  }
+
+  navigateToDeck(set: Set) {
+    this.router.navigateByUrl('/deck/set/' + set.id);
   }
 
   edit(event: Event, set: Set) {
     event.stopPropagation();
-    this.editing = set;
+    this.editing.next(set);
   }
 
   backPressed() {

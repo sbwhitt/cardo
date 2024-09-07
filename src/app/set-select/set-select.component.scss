@@ -7,11 +7,11 @@
 }
 
 .select-list {
-    width: 100%;
     height: 100%;
     display: flex;
     flex-direction: column;
     overflow-y: auto;
     overflow-x: hidden;
     gap: 0.5rem;
+    padding: 2px;
 }

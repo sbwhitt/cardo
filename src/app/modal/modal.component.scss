@@ -33,7 +33,12 @@
        screen and (max-height: 800px) {
     .content {
         width: 85%;
-        height: 85%;
+        height: 80%;
         padding: 4%;
+        margin: 1rem auto;
+    }
+
+    .background {
+        justify-content: flex-start;
     }
 }

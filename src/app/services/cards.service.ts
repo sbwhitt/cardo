@@ -27,14 +27,14 @@ export class CardsService {
     private notificationService: NotificationsService
   ) {}
 
-  async loadCards(set?: Set): Promise<Card[]> {
+  async loadCards(): Promise<Card[]> {
     if (this.cards && this.cards.length > 0) { return this.cards; }
-    if (this.envService.isLocal()) {
-      // @ts-ignored
-      this.cards = cardsLocal.cards;
-      this.notificationService.push({ message: "Sample cards loaded!", success: true })
-      return this.cards ? this.cards : [];
-    }
+    // if (this.envService.isLocal()) {
+    //   // @ts-ignored
+    //   this.cards = cardsLocal.cards;
+    //   this.notificationService.push({ message: "Sample cards loaded!", success: true })
+    //   return this.cards ? this.cards : [];
+    // }
     return this.dbService.getCards()
       .then((res: any) => {
         this.cards = Object.values(res);
