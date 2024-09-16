@@ -42,6 +42,7 @@ export class SetsService {
     return this.dbService.getSets().then((sets) => {
       //@ts-ignore
       this.sets = sets ? this.parse(sets) : [];
+      this.sets.sort((a, b) => a.name.localeCompare(b.name));
       return this.sets;
     });
   }
