@@ -37,6 +37,15 @@ export class SetsService {
     });
   }
 
+  private getNextId(): number {
+    if (!this.sets || this.sets.length === 0) { return 0; }
+    let id = 0;
+    this.sets.forEach((set) => {
+      if (set.id > id) { id = set.id }
+    });
+    return id+1;
+  }
+
   async loadSets(): Promise<Set[]> {
     if (this.sets) { return this.sets; }
     return this.dbService.getSets().then((sets) => {
@@ -83,8 +92,8 @@ export class SetsService {
       });
       return;
     }
-    set.id = this.sets.length === 0 ?
-      0 : set.id = this.sets[this.sets.length-1].id+1;
+    this.sets.sort
+    set.id = this.getNextId();
     // if (this.envService.isLocal()) {
     //   this.sets.push(set);
     //   return;

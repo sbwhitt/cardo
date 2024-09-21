@@ -72,6 +72,7 @@ export class SetEditComponent {
   }
 
   close() {
+    this.confirmOpen = false;
     this.set = null;
     this.setForm.reset();
   }
