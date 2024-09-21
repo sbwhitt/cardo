@@ -3,8 +3,8 @@
 }
 @else {
   <app-set-edit *ngIf="editing" [editing]="editing"></app-set-edit>
-  <div class="list">
-    <div *ngFor="let s of sets" class="set-row">
+  <div class="grid">
+    <div *ngFor="let s of sets" class="set">
       <div
         class="set-card"
         [style]="{ backgroundColor: s.color }"

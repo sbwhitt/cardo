@@ -41,21 +41,21 @@ export class SetSelectComponent {
       });
   }
 
-  addSelection(toSet: Set) {
-    toSet.cards.push(this.selection);
-    this.setsService.updateSet(toSet);
+  addSelectionTo(set: Set) {
+    set.cards.push(this.selection);
+    this.setsService.updateSet(set);
   }
 
-  removeSelection(fromSet: Set) {
-    fromSet.cards.splice(
-      fromSet.cards.findIndex((c) => c === this.selection), 1);
-    this.setsService.updateSet(fromSet);
+  removeSelectionFrom(set: Set) {
+    set.cards.splice(
+      set.cards.findIndex((c) => c === this.selection), 1);
+    this.setsService.updateSet(set);
   }
 
-  toggleSelection(set: Set) {
+  toggleSelectionFor(set: Set) {
     set.cards.includes(this.selection) ?
-      this.removeSelection(set) :
-      this.addSelection(set);
+      this.removeSelectionFrom(set) :
+      this.addSelectionTo(set);
   }
 
   close() {
