@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 import { MenuService } from '../services/menu.service';
 
 @Component({
@@ -10,7 +11,8 @@ import { MenuService } from '../services/menu.service';
 })
 export class NavbarComponent {
   constructor (
-    private menuService: MenuService
+    private menuService: MenuService,
+    public router: Router
   ) {}
 
   ngOnInit() {}

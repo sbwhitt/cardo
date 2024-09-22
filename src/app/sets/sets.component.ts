@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { Subject } from 'rxjs';
 import { LoadingComponent } from '../loading/loading.component';
-import { NavbarComponent } from '../navbar/navbar.component';
 import { MenuService } from '../services/menu.service';
 import { SetsService } from '../services/sets.service';
 import { Set } from '../models';
@@ -16,7 +15,6 @@ import { SetEditComponent } from "../set-edit/set-edit.component";
     CommonModule,
     RouterLink,
     LoadingComponent,
-    NavbarComponent,
     SetEditComponent
   ],
   templateUrl: './sets.component.html',

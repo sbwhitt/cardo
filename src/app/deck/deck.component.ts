@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { LoadingComponent } from '../loading/loading.component';
-import { NavbarComponent } from '../navbar/navbar.component';
 import { CardComponent } from '../card/card.component';
 import { Action, Card, Set } from '../models';
 import { ActionsService } from '../services/actions.service';
@@ -17,7 +16,7 @@ import { TypeColorPipe } from '../pipes/type-color.pipe';
 @Component({
   selector: 'app-deck',
   standalone: true,
-  imports: [CommonModule, LoadingComponent, NavbarComponent, CardComponent, TypeColorPipe],
+  imports: [CommonModule, LoadingComponent, CardComponent, TypeColorPipe],
   templateUrl: './deck.component.html',
   styleUrl: './deck.component.scss'
 })

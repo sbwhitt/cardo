@@ -4,7 +4,6 @@ import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { LoadingComponent } from '../loading/loading.component';
-import { NavbarComponent } from '../navbar/navbar.component';
 import { CardComponent } from '../card/card.component';
 import { CardsService } from '../services/cards.service';
 import { NotificationsService } from '../services/notifications.service';
@@ -21,7 +20,6 @@ import { Card, Set } from '../models';
     CommonModule,
     ReactiveFormsModule,
     LoadingComponent,
-    NavbarComponent,
     CardComponent,
     TypeColorPipe
   ],
