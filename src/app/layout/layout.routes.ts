@@ -1,7 +1,6 @@
 import { Routes } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { LayoutComponent } from './layout.component';
-import { LandingComponent } from '../landing/landing.component';
 import { DeckComponent } from '../deck/deck.component';
 import { ListComponent } from '../list/list.component';
 import { SetsComponent } from '../sets/sets.component';
@@ -14,7 +13,7 @@ export const routes: Routes = [
     children: [
       {
         path: '',
-        component: LandingComponent,
+        component: SetsComponent,
         canActivate: [AuthService]
       },
       {
@@ -37,11 +36,6 @@ export const routes: Routes = [
         path: 'list/set/:setId',
         component: ListComponent,
         pathMatch: 'full',
-        canActivate: [AuthService]
-      },
-      {
-        path: 'sets',
-        component: SetsComponent,
         canActivate: [AuthService]
       }
     ]
