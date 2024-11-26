@@ -27,3 +27,10 @@ export interface Card {
   base_sent_2: string;
   starred: boolean;
 }
+
+export interface Set {
+  id: number;
+  name: string;
+  cards: number[];
+  color: string;
+}

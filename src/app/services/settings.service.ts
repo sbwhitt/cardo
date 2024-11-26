@@ -23,10 +23,10 @@ export class SettingsService {
     private notificationsService: NotificationsService
   ) {
     this.dbService.getSettings().then((res) => {
-      if (!res) { return; }
-      this.settings = res;
       this.loading = false;
       this.loaded.next();
+      if (!res) { return; }
+      this.settings = res;
     });
   }
 

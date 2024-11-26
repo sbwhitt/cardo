@@ -1,27 +1,31 @@
-import { Component, Input } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { LoadingComponent } from '../loading/loading.component';
+import { NavbarComponent } from '../navbar/navbar.component';
 import { CardComponent } from '../card/card.component';
-import { Action, Card } from '../models';
+import { Action, Card, Set } from '../models';
 import { ActionsService } from '../services/actions.service';
 import { CardsService } from '../services/cards.service';
+import { SetsService } from '../services/sets.service';
 import { SettingsService } from '../services/settings.service';
+import { MenuService } from '../services/menu.service';
 import { NotificationsService } from '../services/notifications.service';
 import { TypeColorPipe } from '../pipes/type-color.pipe';
 
 @Component({
   selector: 'app-deck',
   standalone: true,
-  imports: [CommonModule, LoadingComponent, CardComponent, TypeColorPipe],
+  imports: [CommonModule, LoadingComponent, NavbarComponent, CardComponent, TypeColorPipe],
   templateUrl: './deck.component.html',
   styleUrl: './deck.component.scss'
 })
 export class DeckComponent {
   loading = false;
+  subs: Subscription[] = [];
 
-  @Input() sample = false;
-
-  cards: Card[] = [];       // all cards from db, source of truth, immutable
+  set: Set | null = null;
   pile: Card[] = [];        // working pile of all cards, mutable
 
   deck: Card[] = [];        // working deck, mutable
@@ -32,60 +36,57 @@ export class DeckComponent {
 
   constructor(
     private actionsService: ActionsService,
+    private route: ActivatedRoute,
     private cardService: CardsService,
+    private menuService: MenuService,
     private notificationService: NotificationsService,
+    private router: Router,
+    private setsService: SetsService,
     private settingsService: SettingsService
   ) {}
 
   ngOnInit() {
     this.loading = true;
-    if (this.sample || !this.settingsService.loading) { this.init(); }
-    else {
-      this.settingsService.loaded.subscribe(() => this.init());
-    }
+    this.settingsService.loading ?
+      this.settingsService.loaded.subscribe(() => this.init()) :
+      this.init();
   }
 
-  init() {
-    this.actionsService.activeUndo.subscribe((res) => this.applyUndo(res));
-    this.actionsService.activeRedo.subscribe((res) => this.applyRedo(res));
-    this.settingsService.dealStarredChanged.subscribe(() => this.initAndDeal());
-    this.cardService.get(this.sample).then((res: Card[]) => {
-      this.cards = res;
+  async init() {
+    this.subs = [
+      this.route.paramMap.subscribe((map) => this.loadCards(map)),
+      this.actionsService.activeUndo.subscribe((res) => this.applyUndo(res)),
+      this.actionsService.activeRedo.subscribe((res) => this.applyRedo(res)),
+      this.settingsService.dealStarredChanged.subscribe(() => this.initAndDeal()),
+      this.cardService.cardAdded.subscribe((card) => {
+        this.pile.push(card);
+      })
+    ];
+  }
+
+  async loadCards(paramMap: ParamMap): Promise<void> {
+    this.set = await this.setsService.loadSetFromParams(paramMap);
+    this.cardService.loadCards().then(() => {
       this.initAndDeal();
       this.loading = false;
-    }).catch((err) => alert('Failed to get cards from database! ' + err));
-    this.cardService.cardAdded.subscribe(() => {
-      this.initAndDeal();
+    }).catch(() => {
+      this.notificationService.push({ message: 'Couldn\'t load cards!', success: false });
     });
   }
 
-  initPile() {
+  async initPile() {
+    if (this.set) {
+      this.pile = await this.setsService.getCards(this.set.id);
+      return;
+    }
     this.settingsService.getDealStarred() ?
-      this.pile = structuredClone(this.getStarred()) :
-      this.pile = structuredClone(this.cards);
+      this.pile = structuredClone(this.cardService.getStarred()) :
+      this.pile = structuredClone(this.cardService.getCards());
   }
 
   initAndDeal() {
-    this.initPile();
-    this.dealNewDeck();
-  }
-
-  findCardIndex(id: number): number | null {
-    let start = 0;
-    let end = this.cards.length-1;
-    while (end >= start) {
-      let mid = Math.floor((end + start)/2);
-      const hit = this.cards[mid];
-      if (hit.id === id) { return mid; }
-      if (hit.id < id) { start = mid+1; }
-      else if (hit.id > id) { end = mid-1; }
-    }
-    this.notificationService.push({ message: 'Couldn\'t find card!', success: false });
-    return null;
-  }
-
-  getStarred(): Card[] {
-    return this.cards.filter((card) => card.starred);
+    this.initPile()
+      .then(() => this.dealNewDeck());
   }
 
   applyUndo(action: Action) {
@@ -103,11 +104,12 @@ export class DeckComponent {
   }
 
   refreshWorkingCards() {
+    const cards = this.cardService.getCards();
     for (let local of [this.currentDeck, this.deck, this.missed]) {
       for (let i = 0; i < local.length; i++) {
-        const index = this.findCardIndex(local[i].id);
+        const index = this.cardService.findCardIndex(local[i].id);
         if (index === null) { return; }
-        local[i] = this.cards[index];
+        local[i] = cards[index];
       }
     }
   }
@@ -123,7 +125,7 @@ export class DeckComponent {
   }
 
   updateCard(card: Card) {
-    const index = this.findCardIndex(card.id);
+    const index = this.cardService.findCardIndex(card.id);
     if (index === null) { return; }
     this.cardService.update(card, index).then(() => {
       this.notificationService.push({ message: 'Card updated!', success: true });
@@ -137,7 +139,7 @@ export class DeckComponent {
   }
 
   deleteCard(id: number) {
-    const index = this.findCardIndex(id);
+    const index = this.cardService.findCardIndex(id);
     if (index === null) { return; }
     this.cardService.delete(id, index).then(() => {
       this.notificationService.push({ message: 'Card deleted!', success: true });
@@ -229,4 +231,25 @@ export class DeckComponent {
   handleCardDeleted(card: Card) {
     this.deleteCard(card.id);
   }
+
+  backPressed() {
+    this.router.navigateByUrl('');
+  }
+
+  undoPressed() {
+    this.actionsService.applyUndo();
+  }
+
+  addPressed() {
+    this.menuService.openAddCard();
+  }
+
+  redoPressed() {
+    this.actionsService.applyRedo();
+  }
+
+  ngOnDestroy() {
+    this.subs.forEach((sub) => sub.unsubscribe());
+  }
+
 }

@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Database, get, getDatabase, ref, remove, set } from 'firebase/database';
-import { Card, Settings } from '../models';
+import { Router } from '@angular/router';
 import { AuthService } from './auth.service';
+import { EnvironmentService } from './environment.service';
+import { Card, Set, Settings } from '../models';
 
 @Injectable({
   providedIn: 'root'
@@ -9,21 +11,35 @@ import { AuthService } from './auth.service';
 export class DbService {
 
   constructor(
-    private authService: AuthService
+    private authService: AuthService,
+    private envService: EnvironmentService,
+    private router: Router
   ) {}
 
   private getCardsLocation(): string {
     return this.authService.user + '/cards';
   }
 
+  private getSetsLocation(): string {
+    return this.authService.user + '/sets';
+  }
+
   private getDb(): Database | null {
     const fbApp = this.authService.getFirebaseApp();
+    if (!fbApp) { this.router.navigateByUrl('/auth'); }
     return fbApp ?
       getDatabase(fbApp) :
       null;
   }
 
-  private async getLanguage(type: 'base_lang' | 'goal_lang'): Promise<object | null> {
+  private getLocalLang(type: 'base_lang' | 'goal_lang'): string {
+    return type === 'base_lang' ? 'en' : 'de';
+  }
+
+  private async getLanguage(type: 'base_lang' | 'goal_lang'): Promise<object | string | null> {
+    if (this.envService.isLocal()) {
+      return this.getLocalLang(type);
+    }
     const db = this.getDb();
     if (!db) { return null; }
     const dbRef = ref(db, this.authService.user + '/' + type);
@@ -33,17 +49,17 @@ export class DbService {
     });
   }
 
-  async getBaseLanguage(): Promise<object | null> {
+  async getBaseLanguage(): Promise<object | string | null> {
     return this.getLanguage('base_lang');
   }
 
-  async getGoalLanguage(): Promise<object | null> {
+  async getGoalLanguage(): Promise<object | string | null> {
     return this.getLanguage('goal_lang');
   }
 
   async getSettings(): Promise<any | null> {
     const db = this.getDb();
-    if (!db) { return null; }
+    if (!db || this.envService.isLocal()) { return null; }
     const dbRef = ref(db, this.authService.user + '/settings');
     return await get(dbRef).then((snap) => {
       if (snap.exists()) { return snap.toJSON(); }
@@ -53,7 +69,7 @@ export class DbService {
 
   async setSettings(settings: Settings): Promise<void> {
     const db = this.getDb();
-    if (!db) { return; }
+    if (!db || this.envService.isLocal()) { return; }
     const dbRef = ref(db, this.authService.user + '/settings');
     return await set(dbRef, settings);
   }
@@ -87,4 +103,33 @@ export class DbService {
     if (!db) { return; }
     return remove(ref(db, this.getCardsLocation() + '/' + id));
   }
+
+  async getSets(): Promise<object | null> {
+    const db = this.getDb();
+    if (!db) { return null; }
+    const dbRef = ref(db, this.getSetsLocation());
+    return await get(dbRef).then((snap) => {
+      if (snap.exists()) { return snap.toJSON(); }
+      return null;
+    });
+  }
+
+  async addSet(newSet: Set): Promise<void> {
+    const db = this.getDb();
+    if (!db) { return; }
+    return set(ref(db, this.getSetsLocation() + '/' + newSet.id), newSet);
+  }
+
+  async updateSet(updatedSet: Set): Promise<void> {
+    const db = this.getDb();
+    if (!db) { return; }
+    return set(ref(db, this.getSetsLocation() + '/' + updatedSet.id), updatedSet);
+  }
+
+  async deleteSet(setId: number): Promise<void> {
+    const db = this.getDb();
+    if (!db) { return; }
+    return remove(ref(db, this.getSetsLocation() + '/' + setId));
+  }
+
 }

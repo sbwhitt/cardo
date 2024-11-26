@@ -1,37 +1,21 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { Component } from '@angular/core';
+import { MenuService } from '../services/menu.service';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.scss'
 })
 export class NavbarComponent {
-  query = new FormControl("");
+  constructor (
+    private menuService: MenuService
+  ) {}
 
-  @Input() search = false;
+  ngOnInit() {}
 
-  @Output() listPressed = new EventEmitter<void>();
-  @Output() backPressed = new EventEmitter<void>();
-  @Output() settingsPressed = new EventEmitter<void>();
-  @Output() undoPressed = new EventEmitter<void>();
-  @Output() redoPressed = new EventEmitter<void>();
-  @Output() addPressed = new EventEmitter<void>();
-  @Output() searchQuery = new EventEmitter<string>();
-
-  ngOnInit() {
-    this.query.valueChanges.subscribe((query) => this.handleSearch(query));
-  }
-
-  emitListPressed() {
-    this.query.reset();
-    this.listPressed.emit();
-  }
-
-  handleSearch(query: string | null) {
-    if (query === null) { return; }
-    this.searchQuery.emit(query);
+  settingsPressed() {
+    this.menuService.openSettings();
   }
 }
