@@ -8,6 +8,7 @@ import { ColorChoiceComponent } from './color-choice/color-choice.component';
 import { TypeColorPipe } from '../pipes/type-color.pipe';
 import { LanguagePipe } from '../pipes/language.pipe';
 import { CardsService } from '../services/cards.service';
+import { LingueeniService } from '../services/lingueeni.service';
 import { MenuService } from '../services/menu.service';
 import { NotificationsService } from '../services/notifications.service';
 import { SetsService } from '../services/sets.service';
@@ -38,19 +39,20 @@ export class MenuComponent {
   settingsOpen = false;
   addCardOpen = false;
   addSetOpen = false;
+  lingueeniLoaded = false;
 
   settingsForm = new FormGroup({
     deckSize: new FormControl(this.settingsService.getDeckSize(), [Validators.min(1), Validators.required])
   });
 
   addCardForm = new FormGroup({
-    base: new FormControl(null, [Validators.required, Validators.minLength(1)]),
-    goal: new FormControl(null, Validators.required),
-    type: new FormControl('masculine', Validators.required),
-    goal_sent_1: new FormControl(''),
-    base_sent_1: new FormControl(''),
-    goal_sent_2: new FormControl(''),
-    base_sent_2: new FormControl('')
+    base: new FormControl<string>('', [Validators.required, Validators.minLength(1)]),
+    goal: new FormControl<string>('', Validators.required),
+    type: new FormControl<string>('masculine', Validators.required),
+    goal_sent_1: new FormControl<string>(''),
+    base_sent_1: new FormControl<string>(''),
+    goal_sent_2: new FormControl<string>(''),
+    base_sent_2: new FormControl<string>('')
   });
 
   addSetForm = new FormGroup({
@@ -60,13 +62,14 @@ export class MenuComponent {
 
   constructor(
     private cardsService: CardsService,
+    private lingueeniService: LingueeniService,
     private menuService: MenuService,
     private notificationsService: NotificationsService,
     private setsService: SetsService,
     private settingsService: SettingsService
   ) {}
 
-  ngOnInit() {
+  async ngOnInit() {
     this.subs = [
       this.menuService.settingsOpen.subscribe((val) => this.settingsOpen = val),
       this.menuService.addCardOpen.subscribe((val) => this.addCardOpen = val),
@@ -78,6 +81,7 @@ export class MenuComponent {
       })
     ];
     this.typeOptions = this.cardsService.typeOptions;
+    this.lingueeniLoaded = await this.lingueeniService.load();
   }
 
   resetAddForm() {
@@ -91,6 +95,44 @@ export class MenuComponent {
     this.menuService.closeSettings();
     this.menuService.closeAddCard();
     this.menuService.closeAddSet();
+  }
+
+  async searchBase(): Promise<void> {
+    const base = this.addCardForm.get('base')?.value;
+    if (!base) { return; }
+    const translation = await this.lingueeniService.getTranslationFromBase(base);
+    if (!translation) { return; }
+    
+    this.addCardForm.patchValue({
+      goal: translation.text
+    });
+
+    const numExamples = translation.examples.length;
+    this.addCardForm.patchValue({
+      goal_sent_1: numExamples ? translation.examples[0].dst : '',
+      base_sent_1: numExamples ? translation.examples[0].src : '',
+      goal_sent_2: numExamples > 1 ? translation.examples[1].dst : '',
+      base_sent_2: numExamples > 1 ? translation.examples[1].src : ''
+    });
+  }
+
+  async searchGoal(): Promise<void> {
+    const goal = this.addCardForm.get('goal')?.value;
+    if (!goal) { return; }
+    const translation = await this.lingueeniService.getTranslationFromGoal(goal);
+    if (!translation) { return; }
+    
+    this.addCardForm.patchValue({
+      base: translation.text
+    });
+
+    const numExamples = translation.examples.length;
+    this.addCardForm.patchValue({
+      goal_sent_1: numExamples ? translation.examples[0].src : '',
+      base_sent_1: numExamples ? translation.examples[0].dst : '',
+      goal_sent_2: numExamples > 1 ? translation.examples[1].src: '',
+      base_sent_2: numExamples > 1 ? translation.examples[1].dst : ''
+    });
   }
 
   save() {

@@ -4,9 +4,6 @@ import { Subject } from 'rxjs';
 import { NotificationsComponent } from '../notifications/notifications.component';
 import { SetSelectComponent } from '../set-select/set-select.component';
 import { MenuComponent } from '../menu/menu.component';
-import { NavbarComponent } from '../navbar/navbar.component';
-import { DeckComponent } from '../deck/deck.component';
-import { ListComponent } from '../list/list.component';
 import { ActionsService } from '../services/actions.service';
 
 @Component({
@@ -16,10 +13,7 @@ import { ActionsService } from '../services/actions.service';
     RouterOutlet,
     NotificationsComponent,
     SetSelectComponent,
-    MenuComponent,
-    NavbarComponent,
-    DeckComponent,
-    ListComponent
+    MenuComponent
   ],
   templateUrl: './layout.component.html',
   styleUrl: './layout.component.scss'
