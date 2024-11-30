@@ -4,11 +4,7 @@ import { Subject } from 'rxjs';
 import { NotificationsComponent } from '../notifications/notifications.component';
 import { SetSelectComponent } from '../set-select/set-select.component';
 import { MenuComponent } from '../menu/menu.component';
-import { NavbarComponent } from '../navbar/navbar.component';
-import { DeckComponent } from '../deck/deck.component';
-import { ListComponent } from '../list/list.component';
 import { ActionsService } from '../services/actions.service';
-import { LingueeniService } from '../services/lingueeni.service';
 
 @Component({
   selector: 'app-layout',
@@ -17,10 +13,7 @@ import { LingueeniService } from '../services/lingueeni.service';
     RouterOutlet,
     NotificationsComponent,
     SetSelectComponent,
-    MenuComponent,
-    NavbarComponent,
-    DeckComponent,
-    ListComponent
+    MenuComponent
   ],
   templateUrl: './layout.component.html',
   styleUrl: './layout.component.scss'
@@ -31,13 +24,10 @@ export class LayoutComponent {
   query = new Subject<string>();
 
   constructor(
-    private actionsService: ActionsService,
-    private lingueeniService: LingueeniService
+    private actionsService: ActionsService
   ) {}
 
-  ngOnInit() {
-    this.lingueeniService.getTranslationFromBase('hello');
-  }
+  ngOnInit() {}
 
   toggleList() {
     this.listOpen = !this.listOpen;

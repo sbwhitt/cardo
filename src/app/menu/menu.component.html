@@ -19,16 +19,30 @@
   @else if (addCardOpen) {
     <form class="add-form" [formGroup]="addCardForm">
       <h2>Add card</h2>
-      <input
-        class="border-input"
-        type="text"
-        formControlName="base"
-        [placeholder]="'base' | language | async" />
-      <input
-        class="border-input"
-        type="text"
-        formControlName="goal"
-        [placeholder]="'goal' | language | async" />
+      <div class="inp-row">
+        <input
+          class="border-input"
+          style="width: 100%; margin-right: 0;"
+          type="text"
+          formControlName="base"
+          [placeholder]="'base' | language | async" />
+        <button *ngIf="lingueeniLoaded" class="icon-btn" style="height: 3rem;" 
+          title="Lookup on Linguee" (click)="searchBase()">
+          <img src="/assets/search_book.svg" />
+        </button>
+      </div>
+      <div class="inp-row">
+        <input
+          class="border-input"
+          style="width: 100%; margin-right: 0;"
+          type="text"
+          formControlName="goal"
+          [placeholder]="'goal' | language | async" />
+        <button *ngIf="lingueeniLoaded" class="icon-btn" style="height: 3rem;"
+          title="Lookup on Linguee" (click)="searchGoal()">
+          <img src="/assets/search_book.svg" />
+        </button>
+      </div>
       <select class="border-input" formControlName="type">
         <option
           *ngFor="let option of typeOptions"
