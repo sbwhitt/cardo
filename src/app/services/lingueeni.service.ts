@@ -26,7 +26,7 @@ export interface LingueeResult {
   providedIn: 'root'
 })
 export class LingueeniService {
-  primaryUrlBase = 'http://lingueeni.duckdns.org:8000/api/v2';
+  primaryUrlBase = 'http://lingueeni.duckdns.org/api/v2';
   secondaryUrlBase = 'https://lingueeni.onrender.com/api/v2';
 
   loaded = false;
